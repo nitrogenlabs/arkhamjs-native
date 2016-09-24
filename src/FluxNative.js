@@ -61,7 +61,7 @@ class FluxNative extends EventEmitter {
 
         // Save cache in session storage
         if(this._useCache) {
-          promises.push(FluxNative.setSessionData('nlFlux', this._store));
+          promises.push(this.setSessionData('nlFlux', this._store));
         }
 
         return storeClass.setState(this._store.get(name));
@@ -130,7 +130,7 @@ class FluxNative extends EventEmitter {
 
       // Get cached data
       if(this._useCache) {
-        FluxNative.getSessionData('nlFlux').then(data => {
+        this.getSessionData('nlFlux').then(data => {
           const cache = Map.isMap(data) ? data : Map();
 
           // Get default values
@@ -138,7 +138,7 @@ class FluxNative extends EventEmitter {
           this._store = this._store.set(name, state);
 
           // Save cache in session storage
-          FluxNative.setSessionData('nlFlux', this._store);
+          this.setSessionData('nlFlux', this._store);
         });
       }
     }
@@ -174,7 +174,7 @@ class FluxNative extends EventEmitter {
    * @param {string} key Key to store data
    * @param {string|object|array|Immutable} value Data to store.
    */
-  static setSessionData(key, value) {
+  setSessionData(key, value) {
     if(Immutable.Iterable.isIterable(value)) {
       value = value.toJS();
     }
@@ -197,7 +197,7 @@ class FluxNative extends EventEmitter {
    * @param {string} key The key for data
    * @returns {Immutable} the data object associated with the key
    */
-  static getSessionData(key) {
+  getSessionData(key) {
     return new Promise((resolve, reject) => {
       try {
         AsyncStorage.getItem(key)
@@ -216,7 +216,7 @@ class FluxNative extends EventEmitter {
    *
    * @param {string} key Key associated with the data to remove
    */
-  static delSessionData(key) {
+  delSessionData(key) {
     return new Promise((resolve, reject) => {
       try {
         AsyncStorage.removeItem(key).then(resolve);
