@@ -10,16 +10,17 @@ An ES6 Flux library that includes:
 
 Using [npm](https://www.npmjs.com/):
 
-    $ npm install nl-flux
+    $ npm install nl-flux-native
 
 ###React Native Usage
 
 ```js
 // Using an ES6 transpiler for React Native apps
-import {Flux as FluxNative, Store} from 'nl-flux';
+import {Store} from 'nl-flux';
+import {Flux as FluxNative} from 'nl-flux-native';
 
 // not using an ES6 transpiler
-var Flux = require('nl-flux').FluxNative;
+var Flux = require('nl-flux-native').FluxNative;
 var Store = require('nl-flux').Store;
 ```
 
@@ -29,7 +30,8 @@ A complete example can be found in the [nl-react-skeleton](https://github.com/ni
 
 **Store:**
 ```js
-import {Flux, Store} from 'nl-flux';
+import {Store} from 'nl-flux';
+import {Flux as FluxNative} from 'nl-flux-native';
 import {Map} from 'immutable';
 
 class App extends Store {
@@ -56,7 +58,7 @@ export default Flux.registerStore(App);
 
 **Action:**
 ```js
-import {Flux} from 'nl-flux';
+import {Flux as FluxNative} from 'nl-flux-native';
 
 const AppActions = {
   test: (str) => {
