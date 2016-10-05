@@ -24,9 +24,15 @@ class FluxNative extends EventEmitter {
 
     // Create a hash of all the stores - used for registration / de-registration
     this._storeClasses = Map();
-    this._store = this.getSessionData('nlFlux') || Map();
+    this._store = Map();
     this._debug = !!options.get('debug', false);
     this._useCache = !!options.get('cache', true);
+
+    if(this._useCache) {
+      this.getSessionData('nlFlux').then(data => {
+        this._store = Map.isMap(data) ? data : Map();
+      });
+    }
   }
 
   off(event, listener) {
