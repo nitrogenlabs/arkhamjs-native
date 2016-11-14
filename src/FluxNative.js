@@ -18,27 +18,31 @@ class FluxNative extends EventEmitter {
    */
   constructor(options = {}) {
     super();
-
+    
     // Options
     options = Immutable.fromJS(options);
-
+    
     // Create a hash of all the stores - used for registration / de-registration
     this._storeClasses = Map();
     this._store = Map();
     this._debug = !!options.get('debug', false);
     this._useCache = !!options.get('cache', true);
-
+    
     if(this._useCache) {
-      this.getSessionData('nlFlux').then(data => {
-        this._store = Map.isMap(data) ? data : Map();
-      });
+      this.getCache();
     }
   }
-
+  
+  getCache() {
+    this.getSessionData('nlFlux').then(data => {
+      this._store = Map.isMap(data) ? data : Map();
+    });
+  }
+  
   off(event, listener) {
     this.removeListener(event, listener);
   }
-
+  
   /**
    * Dispatches an action to all stores
    *
@@ -48,37 +52,37 @@ class FluxNative extends EventEmitter {
     if(!Array.isArray(actions)) {
       return;
     }
-
+    
     // Loop through actions
     actions.map(a => {
       if(typeof a.type !== 'string') {
         return;
       }
-
+      
       const {type, ...data} = a;
       const oldState = this._store;
       let promises = [];
-
+      
       // When an action comes in, it must be completely handled by all stores
       this._storeClasses.map(storeClass => {
         const name = storeClass.name;
         const state = this._store.get(name) || Immutable.fromJS(storeClass.initialState()) || Map();
         this._store = this._store.set(name, storeClass.onAction(type, data, state) || state);
-
+        
         // Save cache in session storage
         if(this._useCache) {
           promises.push(this.setSessionData('nlFlux', this._store));
         }
-
+        
         return storeClass.setState(this._store.get(name));
       });
-
+      
       if(this._debug) {
         const actionObj = Immutable.fromJS(a).toJS();
         const hasChanged = !this._store.equals(oldState);
         const updatedLabel = hasChanged ? 'Changed State' : 'Unchanged State';
         const updatedColor = hasChanged ? '#00d484' : '#959595';
-
+        
         if(console.group) {
           console.group(`%c FLUX ACTION: ${type}`, 'font-weight:700');
           console.log('%c Action: ', 'color: #00C4FF', actionObj);
@@ -92,13 +96,13 @@ class FluxNative extends EventEmitter {
           console.log(`${updatedLabel}: `, this._store.toJS());
         }
       }
-
+      
       Promise.all(promises).then(() => {
         this.emit(type, data);
       });
     });
   }
-
+  
   /**
    * Gets the current state object
    *
@@ -108,7 +112,7 @@ class FluxNative extends EventEmitter {
    */
   getStore(name = '', defaultValue) {
     let store;
-
+    
     if(Array.isArray(name)) {
       store = this._store.getIn(name, defaultValue);
     }
@@ -117,10 +121,10 @@ class FluxNative extends EventEmitter {
     } else {
       store = this._store || Map();
     }
-
+    
     return store;
   }
-
+  
   /**
    * Registers a new Store with Flux
    *
@@ -128,30 +132,30 @@ class FluxNative extends EventEmitter {
    */
   registerStore(StoreClass) {
     const name = StoreClass.name.toLowerCase();
-
+    
     if(!this._storeClasses.has(name)) {
       // Create store object
       const store = new StoreClass();
       this._storeClasses = this._storeClasses.set(name, store);
-
+      
       // Get cached data
       if(this._useCache) {
         this.getSessionData('nlFlux').then(data => {
           const cache = Map.isMap(data) ? data : Map();
-
+          
           // Get default values
           const state = this._store.get(name) || cache.get(name) || Immutable.fromJS(store.initialState()) || Map();
           this._store = this._store.set(name, state);
-
+          
           // Save cache in session storage
           this.setSessionData('nlFlux', this._store);
         });
       }
     }
-
+    
     return this._storeClasses.get(name);
   }
-
+  
   /**
    * De-registers a named store from Flux
    *
@@ -162,7 +166,7 @@ class FluxNative extends EventEmitter {
     this._storeClasses.delete(name);
     this._store = this._store.delete(name);
   }
-
+  
   /**
    * Gets a store object that is registered with Flux
    *
@@ -173,7 +177,7 @@ class FluxNative extends EventEmitter {
     name = name.toLowerCase();
     return this._storeClasses.get(name);
   }
-
+  
   /**
    * Saves data to the sessionStore
    *
@@ -184,9 +188,9 @@ class FluxNative extends EventEmitter {
     if(Immutable.Iterable.isIterable(value)) {
       value = value.toJS();
     }
-
+    
     value = JSON.stringify(value);
-
+    
     return new Promise((resolve, reject) => {
       try {
         AsyncStorage.setItem(key, value).then(resolve);
@@ -196,7 +200,7 @@ class FluxNative extends EventEmitter {
       }
     });
   }
-
+  
   /**
    * Gets data from
    *
@@ -216,7 +220,7 @@ class FluxNative extends EventEmitter {
       }
     });
   }
-
+  
   /**
    * Removes a key from sessionStorage
    *
@@ -232,7 +236,7 @@ class FluxNative extends EventEmitter {
       }
     });
   }
-
+  
   /**
    * Enables the console debugger
    */
