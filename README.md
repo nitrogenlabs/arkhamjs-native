@@ -1,27 +1,30 @@
-NL Flux
+ArkhamJS Native - Flux Framework for React Native
 =======================
 
 An ES6 Flux library that includes:
-- Flux
 - FluxNative
+
+*Requires [ArkhamJS](https://github.com/nitrogenlabs/arkhamjs):
+- Flux
 - Store
 
 ### Installation
 
 Using [npm](https://www.npmjs.com/):
 
-    $ npm install nl-flux-native
+    $ npm install arkhamjs
+    $ npm install arkhamjs-native
 
 ###React Native Usage
 
 ```js
 // Using an ES6 transpiler for React Native apps
-import {Store} from 'nl-flux';
-import {Flux as FluxNative} from 'nl-flux-native';
+import {Flux as FluxNative} from 'arkhamjs-native';
+import {Store} from 'arkhamjs';
 
 // not using an ES6 transpiler
-var Flux = require('nl-flux-native').FluxNative;
-var Store = require('nl-flux').Store;
+var Flux = require('arkhamjs-native').FluxNative;
+var Store = require('arkhamjs').Store;
 ```
 
 ### How to use
@@ -30,8 +33,8 @@ A complete example can be found in the [nl-react-skeleton](https://github.com/ni
 
 **Store:**
 ```js
-import {Store} from 'nl-flux';
-import {Flux as FluxNative} from 'nl-flux-native';
+import {Flux as FluxNative} from 'arkhamjs-native';
+import {Store} from 'arkhamjs';
 import {Map} from 'immutable';
 
 class App extends Store {
@@ -58,7 +61,7 @@ export default Flux.registerStore(App);
 
 **Action:**
 ```js
-import {Flux as FluxNative} from 'nl-flux-native';
+import {Flux as FluxNative} from 'arkhamjs-native';
 
 const AppActions = {
   test: (str) => {
@@ -146,17 +149,27 @@ Dispatches an Action to all stores
 * [`action`] \(*Object*): An action object. The only required property is *type* which will indicate what is called in
 the stores, all other properties will be sent to the store within the *data* object.
 
-#### `getStore(name)`
+#### `getStore(name, default)`
 
 Get the state tree. If only a particular store is needed, it can be specified.
 
-* [`name`] \(*String*): (optional) A store name.
+* [`name`] \(*String*/*Array*): (optional) A store name. May also use an array to get a nested property value.
+* [`default`] \(*String*/*Immutable*): (optional) The default value if undefined. This may be a string or immutable 
+object (ie. Map, List, etc.).
+
+#####Returns
+
+An Immutable object or a string.
 
 #### `getClass(name)`
 
 Get the store class object.
 
-* [`name`] \(*String*): Name of the store class. 
+* [`name`] \(*String*): The name of the store class object to retrieve. 
+
+#####Returns
+
+A store class object.
 
 #### `registerStore(Class)`
 
@@ -182,7 +195,7 @@ Get an object from sessionStorage.
 
 #####Returns
 
-An Immutable object or a string.
+A promise. Promise returns an immutable object or string associated with the key.
 
 #### `setSessionData(key, value)`
 
@@ -192,35 +205,19 @@ Save an object to sessionStorage.
 * [`value`] \(*String|Object|Immutable*): A string or object to save. Immutable objects will be converted to JSON. All 
 objects will converted to a string before saving.
 
+#####Returns
+
+A promise with an empty result.
+
 #### `delSessionData(key)`
 
 Remove an object from sessionStorage.
 
 * [`key`] \(*String*): Key of object to delete.
 
-#### `getLocalData(key)`
-
-Get an object from localStorage.
-
-* [`key`] \(*String*): Key of object to retrieve.
-
 #####Returns
 
-An Immutable object or a string.
-
-#### `setLocalData(key, value)`
-
-Save an object to localStorage.
-
-* [`key`] \(*String*): Key to reference object.
-* [`value`] \(*String|Object|Immutable*): A string or object to save. Immutable objects will be converted to JSON. All 
-objects will converted to a string before saving.
-
-#### `delLocalData(key)`
-
-Remove an object from localStorage.
-
-* [`key`] \(*String*): Key of the object to remove.
+A promise with an empty result.
 
 #### `enableDebugger()`
 
