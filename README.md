@@ -1,36 +1,31 @@
 ArkhamJS Native - Flux Framework for React Native
 =======================
 
-An ES6 Flux library that includes:
+An ES6 Flux library that uses immutability and includes:
 - FluxNative
-
-*Requires [ArkhamJS](https://github.com/nitrogenlabs/arkhamjs):
-- Flux
 - Store
 
 [![npm version](https://img.shields.io/npm/v/arkhamjs-native.svg?style=flat-square)](https://www.npmjs.com/package/arkhamjs-native)
 [![npm downloads](https://img.shields.io/npm/dm/arkhamjs-native.svg?style=flat-square)](https://www.npmjs.com/package/arkhamjs-native)
-[![Issues](http://img.shields.io/github/issues/nitrogenlabs/arkhamjs-native.svg)](https://github.com/nitrogenlabs/arkhamjs-native/issues)
-[![Gitter](https://img.shields.io/gitter/room/NitrgenLabs/arkhamjs-native.svg)](https://gitter.im/NitrogenLabs/arkhamjs-native)
-[![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
+[![Issues](http://img.shields.io/github/issues/nitrogenlabs/arkhamjs-native.svg?style=flat-square)](https://github.com/nitrogenlabs/arkhamjs-native/issues)
+[![Gitter](https://img.shields.io/gitter/room/NitrgenLabs/arkhamjs-native.svg?style=flat-square)](https://gitter.im/NitrogenLabs/arkhamjs-native)
+[![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](http://opensource.org/licenses/MIT)
 
 ### Installation
 
 Using [npm](https://www.npmjs.com/):
 
-    $ npm install arkhamjs
     $ npm install arkhamjs-native
 
 ###React Native Usage
 
 ```js
 // Using an ES6 transpiler for React Native apps
-import {Flux as FluxNative} from 'arkhamjs-native';
-import {Store} from 'arkhamjs';
+import {Flux as FluxNative, Store} from 'arkhamjs-native';
 
 // not using an ES6 transpiler
 var Flux = require('arkhamjs-native').FluxNative;
-var Store = require('arkhamjs').Store;
+var Store = require('arkhamjs-native').Store;
 ```
 
 ### How to use
@@ -39,8 +34,7 @@ A complete example can be found in the [nl-react-skeleton](https://github.com/ni
 
 **Store:**
 ```js
-import {Flux as FluxNative} from 'arkhamjs-native';
-import {Store} from 'arkhamjs';
+import {Flux as FluxNative, Store} from 'arkhamjs-native';
 import {Map} from 'immutable';
 
 class App extends Store {

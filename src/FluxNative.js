@@ -14,7 +14,7 @@ class FluxNative extends EventEmitter {
    * is a Singleton pattern, so only one should ever exist.
    *
    * @constructor
-   * @this {Flux}
+   * @this {FluxNative}
    */
   constructor(options = {}) {
     super();
@@ -34,7 +34,7 @@ class FluxNative extends EventEmitter {
   }
 
   getCache() {
-    this.getSessionData('nlFlux').then(data => {
+    this.getSessionData('arkhamjs').then(data => {
       this._store = Map.isMap(data) ? data : Map();
     });
   }
@@ -114,6 +114,7 @@ class FluxNative extends EventEmitter {
    *
    * @param {string} [name] (optional) The name of the store for just that object, otherwise it will return all store
    *   objects.
+   * @param {string} [defaultValue] (optional) A default value to return if null.
    * @returns {Map} the state object
    */
   getStore(name = '', defaultValue) {
@@ -135,6 +136,7 @@ class FluxNative extends EventEmitter {
    * Registers a new Store with Flux
    *
    * @param {Class} StoreClass A unique name for the Store
+   * @returns {Object} the class object
    */
   registerStore(StoreClass) {
     const name = StoreClass.name.toLowerCase();
@@ -146,7 +148,7 @@ class FluxNative extends EventEmitter {
 
       // Get cached data
       if(this._useCache) {
-        this.getSessionData('nlFlux').then(data => {
+        this.getSessionData('arkhamjs').then(data => {
           const cache = Map.isMap(data) ? data : Map();
 
           // Get default values
@@ -154,7 +156,7 @@ class FluxNative extends EventEmitter {
           this._store = this._store.set(name, state);
 
           // Save cache in session storage
-          this.setSessionData('nlFlux', this._store);
+          this.setSessionData('arkhamjs', this._store);
         });
       }
     }
@@ -169,7 +171,7 @@ class FluxNative extends EventEmitter {
    */
   deregisterStore(name = '') {
     name = name.toLowerCase();
-    this._storeClasses.delete(name);
+    this._storeClasses = this._storeClasses.delete(name);
     this._store = this._store.delete(name);
   }
 
@@ -245,11 +247,13 @@ class FluxNative extends EventEmitter {
 
   /**
    * Enables the console debugger
+   *
+   * @param {boolean} value Enable or disable the debugger. Default value: true.
    */
-  enableDebugger() {
-    this._debug = true;
+  enableDebugger(value = true) {
+    this._debug = value;
   }
 }
 
-const fluxNative = new FluxNative(window.nlFlux);
+const fluxNative = new FluxNative((window || {}).arkhamjs);
 export default fluxNative;
