@@ -8,6 +8,12 @@ An ES6 Flux library that includes:
 - Flux
 - Store
 
+[![npm version](https://img.shields.io/npm/v/arkhamjs-native.svg?style=flat-square)](https://www.npmjs.com/package/arkhamjs-native)
+[![npm downloads](https://img.shields.io/npm/dm/arkhamjs-native.svg?style=flat-square)](https://www.npmjs.com/package/arkhamjs-native)
+[![Issues](http://img.shields.io/github/issues/nitrogenlabs/arkhamjs-native.svg)](https://github.com/nitrogenlabs/arkhamjs-native/issues)
+[![Gitter](https://img.shields.io/gitter/room/NitrgenLabs/arkhamjs-native.svg)](https://gitter.im/NitrogenLabs/arkhamjs-native)
+[![MIT license](http://img.shields.io/badge/license-MIT-brightgreen.svg)](http://opensource.org/licenses/MIT)
+
 ### Installation
 
 Using [npm](https://www.npmjs.com/):
