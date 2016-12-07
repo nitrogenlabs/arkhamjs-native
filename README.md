@@ -48,7 +48,7 @@ class App extends Store {
   onAction(type, data, state) {
     switch(type) {
       case 'APP_TEST':
-        return state.set('test', data.demo);
+        return state.set('test', data.get('demo'));
       case 'APP_RESET':
         return Map(this.initialState());
       default:
@@ -65,7 +65,7 @@ export default Flux.registerStore(App);
 import {Flux as FluxNative} from 'arkhamjs-native';
 
 const AppActions = {
-  test: (str) => {
+  test: str => {
     Flux.dispatch({type: 'APP_TEST', demo: str});
   }
 };
@@ -76,7 +76,7 @@ export default AppActions;
 **Component:**
 ```js
 import React, {Component} from 'react';
-import {Flux} from '../flux';
+import {Flux as FluxNative} from 'arkhamjs-native';
 
 // Enable console debugger
 Flux.enableDebugger();

@@ -61,7 +61,8 @@ class FluxNative extends EventEmitter {
         return;
       }
 
-      const {type, ...data} = a.toJS();
+      let {type, ...data} = a.toJS();
+      data = Immutable.fromJS(data);
       const oldState = this._store;
       let promises = [];
 
@@ -73,7 +74,7 @@ class FluxNative extends EventEmitter {
 
         // Save cache in session storage
         if(this._useCache) {
-          promises.push(this.setSessionData('ArkhamJS', this._store));
+          promises.push(this.setSessionData('arkhamjs', this._store));
         }
 
         return storeClass.setState(this._store.get(name));
