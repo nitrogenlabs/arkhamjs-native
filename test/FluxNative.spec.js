@@ -4,7 +4,7 @@ import {FluxNative as Flux, Store} from '../src';
 import {AsyncStorage} from 'react-native';
 
 describe('FluxNative', () => {
-  let store, localSetSpy, sessionSetSpy, sessionSpy;
+  let store, sessionSpy;
   const val = 'hello_world';
   const key = 'test';
 
@@ -192,7 +192,7 @@ describe('FluxNative', () => {
     it('should remove session data', () => {
       // Method
       return Flux.delSessionData(key)
-        .then(results => {
+        .then(() => {
           return expect(sessionDelSpy.called).to.be.true;
         });
     });

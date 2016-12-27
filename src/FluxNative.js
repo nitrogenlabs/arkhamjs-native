@@ -56,7 +56,7 @@ class FluxNative extends EventEmitter {
     const list = Immutable.fromJS(actions);
 
     // Loop through actions
-    return list.map(a => {
+    list.forEach(a => {
       if(typeof a.get('type') !== 'string') {
         return;
       }
@@ -100,14 +100,13 @@ class FluxNative extends EventEmitter {
       }
 
       if(promises.length) {
-        Promise.all(promises)
-          .then(() => {
-            this.emit(type, data);
-          });
+        Promise.all(promises).then(() => this.emit(type, data));
       } else {
         this.emit(type, data);
       }
     });
+
+    return list;
   }
 
   /**
