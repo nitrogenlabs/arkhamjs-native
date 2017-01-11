@@ -1,7 +1,7 @@
 import {Map} from 'immutable';
 
 /**
- * Copyright (c) 2016, Nitrogen Labs, Inc.
+ * Copyright (c) 2017, Nitrogen Labs, Inc.
  * Copyrights licensed under the MIT License. See the accompanying LICENSE file for terms.
  */
 
@@ -12,8 +12,9 @@ export default class Store {
    * @constructor
    * @this {Store}
    */
-  constructor() {
+  constructor(name) {
     this.state = Map();
+    this.name = (name || '').toLowerCase();
   }
 
   /**
@@ -33,19 +34,7 @@ export default class Store {
    * @return {String}
    */
   onAction(type, data, state) {
-    switch(type) {
-      default:
-        return state;
-    }
-  }
-
-  /**
-   * Get name of the store.
-   *
-   * @return {String}
-   */
-  get name() {
-    return this.constructor.name.toLowerCase();
+    return state;
   }
 
   /**
