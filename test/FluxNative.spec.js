@@ -9,6 +9,10 @@ describe('FluxNative', () => {
   const key = 'test';
 
   class Test extends Store {
+    constructor() {
+      super('test');
+    }
+
     initialState() {
       return {
         item: 'default',

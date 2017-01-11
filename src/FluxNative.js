@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 import {AsyncStorage} from 'react-native';
-import Immutable, {List, Map} from 'immutable';
+import Immutable, {Map} from 'immutable';
 import Promise from 'bluebird';
 
 /**
@@ -58,7 +58,7 @@ class FluxNative extends EventEmitter {
 
     // Loop through actions
     list.forEach(a => {
-      if(!!a.get('type')) {
+      if(!a.get('type')) {
         return;
       }
 
@@ -132,11 +132,12 @@ class FluxNative extends EventEmitter {
    * @returns {Object} the class object.
    */
   registerStore(StoreClass) {
-    const name = StoreClass.name;
+    // Create store object
+    const storeCls = new StoreClass();
+    const name = storeCls.name;
 
     if(!this._storeClasses.get(name)) {
-      // Create store object
-      const storeCls = new StoreClass();
+      // Save store object
       this._storeClasses = this._storeClasses.set(name, storeCls);
 
       // Get cached data
@@ -146,7 +147,8 @@ class FluxNative extends EventEmitter {
             const cache = Map.isMap(data) ? data : Map();
 
             // Get default values
-            const state = this._store.get(name) || cache.get(name) || Immutable.fromJS(storeCls.initialState()) || Map();
+            const state = this._store
+                .get(name) || cache.get(name) || Immutable.fromJS(storeCls.initialState()) || Map();
             this._store = this._store.set(name, state);
 
             // Save cache in session storage
