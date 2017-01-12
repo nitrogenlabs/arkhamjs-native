@@ -167,19 +167,22 @@ Get the state tree. If only a particular store is needed, it can be specified.
 * [`name`] \(*String*/*Array*): (optional) A store name. May also use an array to get a nested property value.
 * [`default`] \(*String*/*Immutable*): (optional) The default value if undefined. This may be a string or immutable 
 object (ie. Map, List, etc.).
-#####Returns
+
+##### Returns
 An Immutable object or a string.
 
 #### `getClass(name)`
 Get the store class object.
 * [`name`] \(*String*): The name of the store class object to retrieve. 
-#####Returns
+
+##### Returns
 A store class object.
 
 #### `registerStore(Class)`
 Registers the store with Flux.
 * [`Class`] \(*Class*): The store class.
-#####Returns
+
+##### Returns
 A new object from the class. This is usually exported at the end of the store class.
 
 #### `deregisterStore(name)`
@@ -189,7 +192,8 @@ Unregisters the store with Flux.
 #### `getSessionData(key)`
 Get an object from sessionStorage.
 * [`key`] \(*String*): Key of object to retrieve.
-#####Returns
+
+##### Returns
 A promise. Promise returns an immutable object or string associated with the key.
 
 #### `setSessionData(key, value)`
@@ -197,19 +201,24 @@ Save an object to sessionStorage.
 * [`key`] \(*String*): Key to reference object.
 * [`value`] \(*String|Object|Immutable*): A string or object to save. Immutable objects will be converted to JSON. All 
 objects will converted to a string before saving.
-#####Returns
+
+##### Returns
 A promise with a boolean indicating whether the app data was saved.
 
 #### `delSessionData(key)`
 Remove an object from sessionStorage.
 * [`key`] \(*String*): Key of object to delete.
-#####Returns
+
+##### Returns
 A promise with a boolean indicating whether the data was removed.
 
 #### `clearAppData()`
 Removes all app related data from sessionStorage.
-#####Returns
+
+##### Returns
 A promise with a boolean indicating whether the app data was removed.
 
-#### `enableDebugger()`
-Turn on the console debugger to display each action call and store changes.
+#### `enableDebugger(toggle)`
+Turn on the console debugger to display each action call and store changes. By default the framework has the debugger 
+disabled.
+* [`toggle`] \(*Boolean*): Enable or disable debugger. Default: true.

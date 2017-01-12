@@ -1,14 +1,15 @@
 {
   "name": "arkhamjs-native",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "An ES6 Flux library for React Native",
   "license": "MIT",
   "main": "index.js",
   "keywords": [
-    "nitrogenlabs",
-    "react-native",
+    "arkhamjs",
     "flux",
-    "arkhamjs"
+    "immutable",
+    "nitrogenlabs",
+    "react-native"
   ],
   "author": "Giraldo Rosales <giraldo@nitrogenlabs.com> (http://nitrogenlabs.com/)",
   "repository": {

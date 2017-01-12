@@ -126,7 +126,7 @@ describe('FluxNative', () => {
 
   describe('#enableDebugger', () => {
     it('should enable debugger', () => {
-      Flux.enableDebugger(true);
+      Flux.enableDebugger();
       return expect(Flux._debug).to.be.true;
     });
 

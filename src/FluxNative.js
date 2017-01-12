@@ -253,9 +253,9 @@ class FluxNative extends EventEmitter {
   /**
    * Enables the console debugger.
    *
-   * @param {boolean} value Enable or disable the debugger. Default value: false.
+   * @param {boolean} value Enable or disable the debugger. Default value: true.
    */
-  enableDebugger(value = false) {
+  enableDebugger(value = true) {
     this._debug = value;
   }
 }
