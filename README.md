@@ -143,7 +143,10 @@ export default class AppView extends Component {
 export default AppActions;
 ```
 
-### API
+## API
+
+### Events
+
 #### `on(eventType, data)`
 Adds an event listener. It is called any time an action is dispatched to Flux, and some part of the state tree may 
 potentially have changed. You may then call getStore() to read the current state tree inside the callback.
@@ -162,6 +165,9 @@ Dispatches an Action to all stores
 * [`action`] \(*Object*): An action object. The only required property is *type* which will indicate what is called in
 the stores, all other properties will be sent to the store within the *data* object.
 
+
+### Stores
+
 #### `getStore(name, default)`
 Get the state tree. If only a particular store is needed, it can be specified.
 * [`name`] \(*String*/*Array*): (optional) A store name. May also use an array to get a nested property value.
@@ -178,16 +184,21 @@ Get the store class object.
 ##### Returns
 A store class object.
 
-#### `registerStore(Class)`
-Registers the store with Flux.
-* [`Class`] \(*Class*): The store class.
+#### `registerStore(Class|Array)`
+Registers the store with Flux. If registering multiple stores, you may use an array of classes to
+register them at once.
+* [`Class`] \(*Class*|*Array*): The store class(s) to add to Flux.
 
 ##### Returns
-A new object from the class. This is usually exported at the end of the store class.
+A new object from the class. If using an array, the return result will be the array of class objects.
 
 #### `deregisterStore(name)`
-Unregisters the store with Flux.
-* [`name`] \(*String*): Name of store to remove from Flux.
+Deregisters a store from Flux. If deregistering multiple stores, you may use an array of names to
+deregister them at once.
+* [`name`] \(*String*|*Array*): Name of store(s) to remove from Flux.
+
+
+### Storage
 
 #### `getSessionData(key)`
 Get an object from sessionStorage.
@@ -218,6 +229,8 @@ Removes all app related data from sessionStorage.
 ##### Returns
 A promise with a boolean indicating whether the app data was removed.
 
+
+### Debug
 #### `enableDebugger(toggle)`
 Turn on the console debugger to display each action call and store changes. By default the framework has the debugger 
 disabled.
