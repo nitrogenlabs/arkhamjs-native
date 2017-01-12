@@ -241,7 +241,7 @@ class FluxNative extends EventEmitter {
    *
    * @returns {Boolean} Whether app data was successfully removed.
    */
-  clearSessionData() {
+  clearAppData() {
     try {
       return AsyncStorage.removeItem(this._name).then(() => true).catch(() => Promise.resolve(false));
     }
@@ -253,9 +253,9 @@ class FluxNative extends EventEmitter {
   /**
    * Enables the console debugger.
    *
-   * @param {boolean} value Enable or disable the debugger. Default value: true.
+   * @param {boolean} value Enable or disable the debugger. Default value: false.
    */
-  enableDebugger(value = true) {
+  enableDebugger(value = false) {
     this._debug = value;
   }
 }
