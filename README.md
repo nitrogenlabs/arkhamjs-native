@@ -1,4 +1,4 @@
-![ArkhamJS Native](http://arkhamjs.com.s3.amazonaws.com/img/logos/logo-native-txt.png "ArkhamJS Native")
+![ArkhamJS Native](http://arkhamjs.com.s3.amazonaws.com/img/logos/gh-logo-native-txt.png "ArkhamJS Native")
 
 #### Flux Framework for React Native
 
