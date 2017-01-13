@@ -49,10 +49,10 @@ A complete example can be found in the [nl-react-skeleton](https://github.com/ni
 
 **Store:**
 ```js
-import {Flux as FluxNative, Store} from 'arkhamjs-native';
+import {FluxNative as Flux, Store} from 'arkhamjs-native';
 import {Map} from 'immutable';
 
-class App extends Store {
+export default class AppStore extends Store {
   constructor() {
     super('app');
   }
@@ -74,13 +74,11 @@ class App extends Store {
     }
   }
 }
-
-export default Flux.registerStore(App);
 ```
 
 **Action:**
 ```js
-import {Flux as FluxNative} from 'arkhamjs-native';
+import {FluxNative as Flux} from 'arkhamjs-native';
 
 const AppActions = {
   test: str => {
@@ -94,7 +92,8 @@ export default AppActions;
 **Component:**
 ```js
 import React, {Component} from 'react';
-import {Flux as FluxNative} from 'arkhamjs-native';
+import {FluxNative as Flux} from 'arkhamjs-native';
+import AppStore from 'stores/AppStore';
 
 // Enable console debugger
 Flux.enableDebugger();
@@ -107,6 +106,9 @@ export default class AppView extends Component {
     this.state = {
       myTest: ''
     };
+
+    // Register stores
+    Flux.registerStore([AppStore]);
 
     // Bind methods
     this.onAppTest = this.onAppTest.bind(this);
