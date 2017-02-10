@@ -95,9 +95,6 @@ import React, {Component} from 'react';
 import {FluxNative as Flux} from 'arkhamjs-native';
 import AppStore from 'stores/AppStore';
 
-// Enable console debugger
-Flux.enableDebugger();
-
 export default class AppView extends Component {
   constructor(props) {
     super(props);
@@ -106,6 +103,18 @@ export default class AppView extends Component {
     this.state = {
       myTest: ''
     };
+
+    // Initialize Flux with custom configuration (optional)
+    Flux.config({
+      // Enable caching in session storage
+      cache: true,
+      
+      // Enable debugger
+      debugLevel: Flux.DEBUG_DISPATCH,
+      
+      // Name of your app
+      name: 'MyApp'
+    });
 
     // Register stores
     Flux.registerStore([AppStore]);
@@ -145,7 +154,30 @@ export default class AppView extends Component {
 export default AppActions;
 ```
 
-## API
+## Flux API
+
+### Configuration
+
+#### `config(options)`
+Set configuration options.
+
+#### Arguments
+* [`options`] \(*Object*): Configuration options.
+  * debugLevel \(*Number*) - Enable the debugger. You can specify to show console.logs and/or Flux dispatches. You can
+  use a numeric value or one of the pre-defined constants below:
+    * DEBUG_DISABLED (0) - Disable debugger.
+    * DEBUG_LOGS (1) - Only allow console logs.
+    * DEBUG_DISPATCH (2) - Display both, console logs and dispatcher action details.
+  * debugLogFnc \(*Function*) - (optional) Passes the debug data to the specified function with the debugLevel as
+  the first parameter and the data as the 1-n parameters. Executed when Flux.debugLog() is run.
+  * debugInfoFnc \(*Function*) - (optional) Passes the debug data to the specified function with the debugLevel as
+  the first parameter and the data as the 1-n parameters. Executed when Flux.debugError() is run.
+  * debugErrorFnc \(*Function*) - (optional) Passes the debug data to the specified function with the debugLevel as
+  the first parameter and the data as the 1-n parameters. Executed when Flux.debugInfo() is run.
+  * name \(*String*) - Name of your app. Should not contain spaces. Is used as the session storage property for your 
+  cache. *Default: arkhamjs*
+  * useCache \(*Boolean*) - Enable caching to session storage. *Default: true*
+
 
 ### Events
 
@@ -158,15 +190,15 @@ potentially have changed. You may then call getStore() to read the current state
 * [`listener`] \(*Function*): The callback to be invoked any time an action has been dispatched.
 
 #### `off(eventType, data)`
-Removes the event listener.
+Removes an event listener.
 * [`eventType`] \(*String*): Event to unsubscribe.
 * [`listener`] \(*Function*): The callback associated with the subscribed event.
 
-#### `dispatch(action)`
+#### `dispatch(action, silent)`
 Dispatches an Action to all stores
 * [`action`] \(*Object*): An action object. The only required property is *type* which will indicate what is called in
 the stores, all other properties will be sent to the store within the *data* object.
-
+* [`silent`] \(*Boolean*): Silence event emitter for this dispatch. Default: false.
 
 ### Stores
 
@@ -177,7 +209,17 @@ Get the state tree. If only a particular store is needed, it can be specified.
 object (ie. Map, List, etc.).
 
 ##### Returns
-An Immutable object or a string.
+The app store object as an immutable object.
+
+#### `setStore(name, value)`
+Used for unit testing. Set a store value. If only a particular store or property needs to be set, it can be specified.
+* [`name`] \(*String*/*Array*): A store name. May also use an array to get a nested property value.
+* [`value`] \(*Any*): The value to set. This may be a string, number, boolean or immutable 
+object (ie. Map, List, etc.).
+
+##### Returns
+The updated store as an immutable object.
+
 
 #### `getClass(name)`
 Get the store class object.
@@ -237,3 +279,29 @@ A promise with a boolean indicating whether the app data was removed.
 Turn on the console debugger to display each action call and store changes. By default the framework has the debugger 
 disabled.
 * [`toggle`] \(*Boolean*): Enable or disable debugger. Default: true.
+
+#### `debugLog(obj1 [, obj2, ..., objN])`
+Logs data in the console. Only logs when in debug mode.  Will also call the debugLogFnc method set in the config.
+* [`obj`] \(*Any*): A list of JavaScript objects to output. The string representations of each of these objects are 
+appended together in the order listed and output.
+
+#### `debugInfo(obj1 [, obj2, ..., objN])`
+Logs informational messages to the console. Will also call the debugInfoFnc method set in the config.
+* [`obj`] \(*Any*): A list of JavaScript objects to output. The string representations of each of these objects are 
+appended together in the order listed and output.
+
+#### `debugError(obj1 [, obj2, ..., objN])`
+Logs errors in the console. Will also call the debugErrorFnc method set in the config.
+* [`obj`] \(*Any*): A list of JavaScript objects to output. The string representations of each of these objects are 
+appended together in the order listed and output.
+
+
+## Store API
+
+### State
+
+#### `getInitialState()`
+Used for unit testing. Gets the initial state of the store.
+
+##### Returns
+The initial state of the store as an immutable object.

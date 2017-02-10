@@ -1,4 +1,4 @@
-import {Map} from 'immutable';
+import Immutable, {Map} from 'immutable';
 
 /**
  * Copyright (c) 2017, Nitrogen Labs, Inc.
@@ -7,22 +7,38 @@ import {Map} from 'immutable';
 
 export default class Store {
   /**
-   * A Flux-like Store Interface
+   * A Flux store interface
    *
    * @constructor
    * @this {Store}
    */
   constructor(name) {
+    // Methods
+    this.getInitialState = this.getInitialState.bind(this);
+    this.initialState = this.initialState.bind(this);
+    this.onAction = this.onAction.bind(this);
+
+    // Vars
     this.state = Map();
     this.name = (name || 'store').toLowerCase();
   }
 
   /**
+   * Get the initial state as an immutable object.
+   *
+   * @return {Immutable} The initial state of the store as an immutable object.
+   */
+  getInitialState() {
+    return Immutable.fromJS(this.initialState() || {});
+  }
+
+  /**
    * Initial state.
    *
+   * @return {Object} The initial state of the store as a JSON object.
    */
   initialState() {
-    return Map();
+    return {};
   }
 
   /**

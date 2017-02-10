@@ -19,124 +19,51 @@ class FluxNative extends EventEmitter {
   constructor(options = {}) {
     super();
 
-    // Options
-    options = Immutable.fromJS(options);
+    // Methods
+    this._deregister = this._deregister.bind(this);
+    this._getCache = this._getCache.bind(this);
+    this._register = this._register.bind(this);
+    this.clearAppData = this.clearAppData.bind(this);
+    this.config = this.config.bind(this);
+    this.debugError = this.debugError.bind(this);
+    this.debugInfo = this.debugInfo.bind(this);
+    this.debugLog = this.debugLog.bind(this);
+    this.delSessionData = this.delSessionData.bind(this);
+    this.deregisterStore = this.deregisterStore.bind(this);
+    this.dispatch = this.dispatch.bind(this);
+    this.enableDebugger = this.enableDebugger.bind(this);
+    this.getClass = this.getClass.bind(this);
+    this.getSessionData = this.getSessionData.bind(this);
+    this.getStore = this.getStore.bind(this);
+    this.off = this.off.bind(this);
+    this.registerStore = this.registerStore.bind(this);
+    this.setSessionData = this.setSessionData.bind(this);
+    this.setStore = this.setStore.bind(this);
 
-    // Create a hash of all the stores - used for registration / de-registration
+    // Properties
     this._storeClasses = Map();
     this._store = Map();
-    this._debug = !!options.get('debug', false);
-    this._useCache = !!options.get('cache', true);
-    this._name = 'arkhamjs';
 
-    if(this._useCache) {
-      this.getCache();
-    }
+    // Debug modes
+    this.DEBUG_DISABLED = 0;
+    this.DEBUG_LOGS = 1;
+    this.DEBUG_DISPATCH = 2;
+
+    // Configuration
+    this.config(options);
   }
 
-  getCache() {
+  _deregister(name = '') {
+    this._storeClasses = this._storeClasses.delete(name);
+    this._store = this._store.delete(name);
+  }
+
+  _getCache() {
     this.getSessionData(this._name).then(data => {
-      this._store = Map.isMap(data) ? data : Map();
+      if(Map.isMap(data)) {
+        this._store = data;
+      }
     });
-  }
-
-  off(event, listener) {
-    this.removeListener(event, listener);
-  }
-
-  /**
-   * Dispatches an action to all stores.
-   *
-   * @param {...Objects} actions to dispatch to all the stores.
-   */
-  dispatch(...actions) {
-    if(!Array.isArray(actions)) {
-      return;
-    }
-
-    const list = Immutable.fromJS(actions);
-
-    // Loop through actions
-    list.forEach(a => {
-      if(!a.get('type')) {
-        return;
-      }
-
-      let {type, ...data} = a.toJS();
-      data = Immutable.fromJS(data);
-      const oldState = this._store;
-
-      // When an action comes in, it must be completely handled by all stores
-      this._storeClasses.forEach(storeCls => {
-        const name = storeCls.name;
-        const state = this._store.get(name) || Immutable.fromJS(storeCls.initialState()) || Map();
-        this._store = this._store.set(name, storeCls.onAction(type, data, state) || state);
-        storeCls.state = this._store.get(name);
-      });
-
-      if(this._debug) {
-        const hasChanged = !this._store.equals(oldState);
-        const updatedLabel = hasChanged ? 'Changed State' : 'Unchanged State';
-        const updatedColor = hasChanged ? '#00d484' : '#959595';
-
-        if(console.groupCollapsed) {
-          console.groupCollapsed(`FLUX DISPATCH: ${type}`);
-          console.log('%c Action: ', 'color: #00C4FF', a.toJS());
-          console.log('%c Last State: ', 'color: #959595', oldState.toJS());
-          console.log(`%c ${updatedLabel}: `, `color: ${updatedColor}`, this._store.toJS());
-          console.groupEnd();
-        } else {
-          console.log(`FLUX DISPATCH: ${type}`);
-          console.log(`Action: ${a.toJS()}`);
-          console.log('Last State: ', oldState.toJS());
-          console.log(`${updatedLabel}: `, this._store.toJS());
-        }
-      }
-
-      // Save cache in session storage
-      let promise = Promise.resolve();
-
-      if(this._useCache) {
-        promise = this.setSessionData(this._name, this._store);
-      }
-
-      promise.then(() => this.emit(type, data));
-    });
-
-    return list;
-  }
-
-  /**
-   * Gets the current state object.
-   *
-   * @param {string} [name] (optional) The name of the store for just that object, otherwise it will return all store
-   *   objects.
-   * @param {string} [defaultValue] (optional) A default value to return if null.
-   * @returns {Map} the state object.
-   */
-  getStore(name = '', defaultValue) {
-    if(Array.isArray(name)) {
-      return this._store.getIn(name, defaultValue);
-    }
-    else if(name !== '') {
-      return this._store.get(name, defaultValue);
-    } else {
-      return this._store || Map();
-    }
-  }
-
-  /**
-   * Registers a new Store.
-   *
-   * @param {Class|Array} StoreClass Store class.
-   * @returns {Object|Array} the class object(s).
-   */
-  registerStore(StoreClass) {
-    if(Array.isArray(StoreClass)) {
-      return StoreClass.map(cls => this._register(cls));
-    } else {
-      return this._register(StoreClass);
-    }
   }
 
   _register(StoreClass) {
@@ -165,17 +92,135 @@ class FluxNative extends EventEmitter {
             const cache = Map.isMap(data) ? data : Map();
 
             // Get default values
-            const state = this._store
-                .get(name) || cache.get(name) || Immutable.fromJS(storeCls.initialState()) || Map();
+            const state = this._store.get(name) || cache.get(name) || storeCls.getInitialState() || Map();
             this._store = this._store.set(name, state);
 
             // Save cache in session storage
             this.setSessionData(this._name, this._store);
           });
+      } else {
+        // Get default values
+        const state = this._store.get(name) || storeCls.getInitialState() || Map();
+        this._store = this._store.set(name, state);
       }
     }
 
     return this._storeClasses.get(name);
+  }
+
+  /**
+   * Removes all app data from sessionStorage.
+   *
+   * @returns {Boolean} Whether app data was successfully removed.
+   */
+  clearAppData() {
+    try {
+      // Set all store data to initial state
+      this._storeClasses.forEach(storeCls => {
+        const state = Immutable.fromJS(storeCls.getInitialState());
+        this._store = this._store.set(storeCls.name, state);
+        storeCls.store = state;
+      });
+
+      if(this._useCache) {
+        return AsyncStorage.setItem(this._name, this._store).then(() => true).catch(() => Promise.resolve(false));
+      } else {
+        return Promise.resolve(true);
+      }
+    }
+    catch(error) {
+      return Promise.resolve(false);
+    }
+  }
+
+  /**
+   * Set configuration options.
+   *
+   * @param {object} options Configuration options.
+   */
+  config(options) {
+    this._options = Immutable.fromJS(options || {});
+
+    // Name
+    this._name = this._options.get('name', 'arkhamjs');
+
+    // Cache
+    this._useCache = this._options.get('useCache', true);
+
+    if(this._useCache) {
+      this._getCache();
+    }
+
+    // Debug
+    this._debugLevel = this._options.get('debugLevel', this.DEBUG_DISABLED);
+  }
+
+  /**
+   * Logs errors in the console. Will also call the debugErrorFnc method set in the config.
+   *
+   * @param {object} obj A list of JavaScript objects to output. The string representations of each of these objects
+   * are appended together in the order listed and output.
+   */
+  debugError(...obj) {
+    if(this._debugLevel) {
+      console.error(...obj);
+    }
+
+    const fnc = this._options.get('debugErrorFnc');
+
+    if(fnc) {
+      fnc(this._debugLevel, ...obj);
+    }
+  }
+
+  /**
+   * Logs informational messages to the console. Will also call the debugInfoFnc method set in the config.
+   *
+   * @param {object} obj A list of JavaScript objects to output. The string representations of each of these objects
+   * are appended together in the order listed and output.
+   */
+  debugInfo(...obj) {
+    if(this._debugLevel) {
+      console.info(...obj);
+    }
+
+    const fnc = this._options.get('debugInfoFnc');
+
+    if(fnc) {
+      fnc(this._debugLevel, ...obj);
+    }
+  }
+  /**
+   * Logs data in the console. Only logs when in debug mode.  Will also call the debugLogFnc method set in the config.
+   *
+   * @param {object} obj A list of JavaScript objects to output. The string representations of each of these objects
+   * are appended together in the order listed and output.
+   */
+  debugLog(...obj) {
+    if(this._debugLevel) {
+      console.log(...obj);
+    }
+
+    const fnc = this._options.get('debugLogFnc');
+
+    if(fnc) {
+      fnc(this._debugLevel, ...obj);
+    }
+  }
+
+  /**
+   * Removes a key from sessionStorage.
+   *
+   * @param {string} key Key associated with the data to remove.
+   * @returns {Boolean} Whether data was successfully removed.
+   */
+  delSessionData(key) {
+    try {
+      return AsyncStorage.removeItem(key).then(() => true).catch(() => Promise.resolve(false));
+    }
+    catch(error) {
+      return Promise.resolve(false);
+    }
   }
 
   /**
@@ -193,9 +238,75 @@ class FluxNative extends EventEmitter {
     }
   }
 
-  _deregister(name = '') {
-    this._storeClasses = this._storeClasses.delete(name);
-    this._store = this._store.delete(name);
+  /**
+   * Dispatches an action to all stores.
+   *
+   * @param {object} action to dispatch to all the stores.
+   * @param {boolean} silent To silence any events.
+   */
+  dispatch(action, silent = false) {
+    action = Immutable.fromJS(action);
+    const type = action.get('type');
+    const data = action.filter((v, k) => k !== 'type');
+
+    // Require a type
+    if(!type) {
+      return;
+    }
+
+    const oldState = this._store;
+
+    // When an action comes in, it must be completely handled by all stores
+    this._storeClasses.forEach(storeCls => {
+      const name = storeCls.name;
+      const state = this._store.get(name) || Immutable.fromJS(storeCls.getInitialState()) || Map();
+      this._store = this._store.set(name, storeCls.onAction(type, data, state) || state);
+      storeCls.state = this._store.get(name);
+    });
+
+    if(this._debugLevel > this.DEBUG_LOGS) {
+      const hasChanged = !this._store.equals(oldState);
+      const updatedLabel = hasChanged ? 'Changed State' : 'Unchanged State';
+      const updatedColor = hasChanged ? '#00d484' : '#959595';
+
+      if(console.groupCollapsed) {
+        console.groupCollapsed(`FLUX DISPATCH: ${type}`);
+        console.log('%c Action: ', 'color: #00C4FF', action.toJS());
+        console.log('%c Last State: ', 'color: #959595', oldState.toJS());
+        console.log(`%c ${updatedLabel}: `, `color: ${updatedColor}`, this._store.toJS());
+        console.groupEnd();
+      } else {
+        console.log(`FLUX DISPATCH: ${type}`);
+        console.log(`Action: ${action.toJS()}`);
+        console.log('Last State: ', oldState.toJS());
+        console.log(`${updatedLabel}: `, this._store.toJS());
+      }
+    }
+
+    // Save cache in session storage
+    let promise = Promise.resolve();
+
+    if(this._useCache) {
+      promise = this.setSessionData(this._name, this._store);
+    }
+
+    if(!silent) {
+      promise.then(() => this.emit(type, data));
+    }
+
+    return promise.then(() => action);
+  }
+
+  /**
+   * Enables the console debugger.
+   *
+   * @param {number} level Enable or disable the debugger. Uses the constants:
+   *   DEBUG_DISABLED (0) - Disable.
+   *   DEBUG_LOGS (1) - Enable console logs.
+   *   DEBUG_DISPATCH (2) - Enable console logs and dispatch action data (default).
+   */
+  enableDebugger(level = 2) {
+    this._debugLevel = level;
   }
 
   /**
@@ -206,6 +317,66 @@ class FluxNative extends EventEmitter {
    */
   getClass(name = '') {
     return this._storeClasses.get(name);
+  }
+
+  /**
+   * Gets data from session storage.
+   *
+   * @param {string} key The key for data.
+   * @returns {Immutable} the data object associated with the key.
+   */
+  getSessionData(key) {
+    try {
+      return AsyncStorage.getItem(key)
+        .then(value => Immutable.fromJS(JSON.parse(value || '""')))
+        .catch(Promise.resolve(null));
+    }
+    catch(error) {
+      return Promise.resolve(null);
+    }
+  }
+
+  /**
+   * Gets the current state object.
+   *
+   * @param {string|array} [name] (optional) The name of the store for an object, otherwise it will return all store
+   *   objects. You can also use an array to specify a property within the object (uses the immutable, getIn).
+   * @param {string} [defaultValue] (optional) A default value to return if null.
+   * @returns {Map} the state object.
+   */
+  getStore(name = '', defaultValue) {
+    if(Array.isArray(name)) {
+      return this._store.getIn(name, defaultValue);
+    }
+    else if(name !== '') {
+      return this._store.get(name, defaultValue);
+    } else {
+      return this._store || Map();
+    }
+  }
+
+  /**
+   * Removes an event listener.
+   *
+   * @param {string} [eventType] Event to unsubscribe.
+   * @param {function} [listener] The callback associated with the subscribed event.
+   */
+  off(eventType, listener) {
+    this.removeListener(eventType, listener);
+  }
+
+  /**
+   * Registers a new Store.
+   *
+   * @param {Class|Array} StoreClass Store class.
+   * @returns {Object|Array} the class object(s).
+   */
+  registerStore(StoreClass) {
+    if(Array.isArray(StoreClass)) {
+      return StoreClass.map(cls => this._register(cls));
+    } else {
+      return this._register(StoreClass);
+    }
   }
 
   /**
@@ -233,58 +404,22 @@ class FluxNative extends EventEmitter {
   }
 
   /**
-   * Gets data from session storage.
+   * Sets the current state object.
    *
-   * @param {string} key The key for data.
-   * @returns {Immutable} the data object associated with the key.
+   * @param {string|array} [name] The name of the store to set. You can also use an array to specify a property
+   * within the object (uses the immutable, setIn).
+   * @param {any} [value] The value to set.
+   * @returns {Immutable} the object that was set.
    */
-  getSessionData(key) {
-    try {
-      return AsyncStorage.getItem(key)
-        .then(value => Immutable.fromJS(JSON.parse(value || '""')))
-        .catch(Promise.resolve(null));
+  setStore(name = '', value) {
+    if(Array.isArray(name)) {
+      return this._store = this._store.setIn(name, value);
     }
-    catch(error) {
-      return Promise.resolve(null);
+    else if(name !== '') {
+      return this._store = this._store.set(name, value);
+    } else {
+      return this._store || Map();
     }
-  }
-
-  /**
-   * Removes a key from sessionStorage.
-   *
-   * @param {string} key Key associated with the data to remove.
-   * @returns {Boolean} Whether data was successfully removed.
-   */
-  delSessionData(key) {
-    try {
-      return AsyncStorage.removeItem(key).then(() => true).catch(() => Promise.resolve(false));
-    }
-    catch(error) {
-      return Promise.resolve(false);
-    }
-  }
-
-  /**
-   * Removes all app data from sessionStorage.
-   *
-   * @returns {Boolean} Whether app data was successfully removed.
-   */
-  clearAppData() {
-    try {
-      return AsyncStorage.removeItem(this._name).then(() => true).catch(() => Promise.resolve(false));
-    }
-    catch(error) {
-      return Promise.resolve(false);
-    }
-  }
-
-  /**
-   * Enables the console debugger.
-   *
-   * @param {boolean} value Enable or disable the debugger. Default value: true.
-   */
-  enableDebugger(value = true) {
-    this._debug = value;
   }
 }
 
