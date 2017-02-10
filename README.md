@@ -200,6 +200,10 @@ Dispatches an Action to all stores
 the stores, all other properties will be sent to the store within the *data* object.
 * [`silent`] \(*Boolean*): Silence event emitter for this dispatch. Default: false.
 
+##### Returns
+The promise is resolved when and if the app saves data to the AsyncStorage, returning the action.
+
+
 ### Stores
 
 #### `getStore(name, default)`

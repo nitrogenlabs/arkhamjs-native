@@ -243,6 +243,8 @@ class FluxNative extends EventEmitter {
    *
    * @param {object} action to dispatch to all the stores.
    * @param {boolean} silent To silence any events.
+   * @returns {Promise} The promise is resolved when and if the app saves data to the AsyncStorage, returning
+   * the action.
    */
   dispatch(action, silent = false) {
     action = Immutable.fromJS(action);
