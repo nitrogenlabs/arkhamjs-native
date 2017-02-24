@@ -43,10 +43,6 @@ var Flux = require('arkhamjs-native').FluxNative;
 var Store = require('arkhamjs-native').Store;
 ```
 
-### How to use
-
-A complete example can be found in the [nl-react-skeleton](https://github.com/nitrog7/nl-react-skeleton). Below is an example of an action and a store.
-
 **Store:**
 ```js
 import {FluxNative as Flux, Store} from 'arkhamjs-native';
