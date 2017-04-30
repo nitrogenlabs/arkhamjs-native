@@ -88,8 +88,10 @@ export default AppActions;
 **Component:**
 ```js
 import React, {Component} from 'react';
+import {Text} from 'react-native';
 import {FluxNative as Flux} from 'arkhamjs-native';
 import AppStore from 'stores/AppStore';
+import AppActions from 'services/AppActions';
 
 export default class AppView extends Component {
   constructor(props) {
@@ -97,6 +99,7 @@ export default class AppView extends Component {
     
     // Initial state
     this.state = {
+      init: false,
       myTest: ''
     };
 
@@ -112,23 +115,32 @@ export default class AppView extends Component {
       name: 'MyApp'
     });
 
-    // Register stores
-    Flux.registerStore([AppStore]);
-
     // Bind methods
     this.onAppTest = this.onAppTest.bind(this);
+    this.onInit = this.onInit.bind(this);
   }
   
   componentWillMount() {
     // Add listeners
+    Flux.onInit(this.onInit);
     Flux.on('APP_TEST', this.onAppTest);
     
-    // Initialize
-    AppActions.test('Hello World');
+    // Register stores
+    Flux.registerStore([AppStore]);
+   
   }
 
   componentWillUnmount() {
+    Flux.offInit(this.onInit);
     Flux.off('APP_TEST', this.onAppTest);
+  }
+  
+  onInit() {
+    // Initialize
+    AppActions.test('Hello World');
+    
+    // Run any functions or Flus.getStore after ArkhamJS has initialized.
+    this.setState({init: true});
   }
   
   onAppTest() {
@@ -143,7 +155,11 @@ export default class AppView extends Component {
   }
   
   render() {
-    return <div>{this.state.myTest}</div>
+    if(this.state.init) {
+      return <Text>{this.state.myTest}</Text>
+    } else {
+      return null;
+    }
   }
 };
 
@@ -177,18 +193,29 @@ Set configuration options.
 
 ### Events
 
-#### `on(eventType, data)`
+#### `on(eventType, listener)`
 Adds an event listener. It is called any time an action is dispatched to Flux, and some part of the state tree may 
 potentially have changed. You may then call getStore() to read the current state tree inside the callback.
 
-#### Arguments
 * [`eventType`] \(*String*): Event to subscribe for store updates.
 * [`listener`] \(*Function*): The callback to be invoked any time an action has been dispatched.
 
-#### `off(eventType, data)`
+#### `onInit(listener)`
+Adds an event listener for ArkhamJS initialization. The listener is called once all stores have been created and cache 
+has been obtained from the cache. You may start your app after initialization.
+
+* [`listener`] \(*Function*): The callback to be invoked any time an action has been dispatched.
+
+#### `off(eventType, listener)`
 Removes an event listener.
 * [`eventType`] \(*String*): Event to unsubscribe.
 * [`listener`] \(*Function*): The callback associated with the subscribed event.
+
+#### `offInit(listener)`
+Removes the event listener for ArkhamJS initialization.
+
+* [`listener`] \(*Function*): The callback to be invoked any time an action has been dispatched.
+
 
 #### `dispatch(action, silent)`
 Dispatches an Action to all stores

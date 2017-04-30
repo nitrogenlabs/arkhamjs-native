@@ -2,9 +2,11 @@ import {expect} from 'chai';
 import sinon from 'sinon';
 import {FluxNative as Flux, Store} from '../src';
 import {AsyncStorage} from 'react-native';
+import Promise from 'bluebird';
 
 describe('FluxNative', () => {
   let store, sessionSpy;
+  let storePromise = Promise.resolve();
   const val = 'hello_world';
   const key = 'test';
   const cfg = {
@@ -42,7 +44,7 @@ describe('FluxNative', () => {
     sessionSpy = sinon.spy(Flux, 'setSessionData');
 
     // Method
-    store = Flux.registerStore(TestStore);
+    storePromise = Flux.registerStore(TestStore);
   });
 
   after(() => {
@@ -321,8 +323,11 @@ describe('FluxNative', () => {
       return expect(sessionSpy.called).to.be.true;
     });
 
-    it('should return the class', () => {
-      return expect(store.name).to.eq('test');
+    it('should return the class', done => {
+      storePromise.then(data => {
+        expect(data.name).to.eq('test');
+        done();
+      });
     });
   });
 
