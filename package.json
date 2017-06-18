@@ -1,6 +1,6 @@
 {
   "name": "arkhamjs-native",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "An ES6 Flux library for React Native",
   "license": "MIT",
   "main": "index.js",
@@ -34,8 +34,8 @@
     "events": "^1.1.1",
     "immutable": "^3.8.1",
     "prop-types": "^15.5.10",
-    "react": "^16.0.0-alpha.12",
-    "react-native": "^0.45.1",
+    "react": "16.0.0-alpha.12",
+    "react-native": "0.45.1",
     "react-router-native": "^4.1.1"
   },
   "devDependencies": {
