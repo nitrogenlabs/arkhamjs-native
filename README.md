@@ -35,13 +35,7 @@ Using [npm](https://www.npmjs.com/):
 ###React Native Usage
 
 ```js
-// Using an ES6 transpiler for React Native apps
 import {Flux, Store} from 'arkhamjs-native';
-
-// not using an ES6 transpiler
-var Flux = require('arkhamjs-native').Flux;
-var Store = require('arkhamjs-native').Store;
-```
 
 **Store:**
 ```js
@@ -189,6 +183,7 @@ Set configuration options.
   * name \(*String*) - Name of your app. Should not contain spaces. Is used as the session storage property for your 
   cache. *Default: arkhamjs*
   * useCache \(*Boolean*) - Enable caching to session storage. *Default: true*
+  * useImmutable \(*Boolean*) - Enable immutable return values. If set to false, will return JSON objects. *Default: true*
 
 
 ### Events
