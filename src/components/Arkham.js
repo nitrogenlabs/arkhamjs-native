@@ -5,8 +5,8 @@
 import React, {Component} from 'react';
 import {NativeRouter, Switch} from 'react-router-native';
 import PropTypes from 'prop-types';
-import Flux from '../../src/Flux';
-import ArkhamConstants from '../../src/constants/ArkhamConstants';
+import Flux from '../Flux';
+import ArkhamConstants from '../constants/ArkhamConstants';
 
 /**
  * Arkham
@@ -66,15 +66,15 @@ export default class Arkham extends Component {
     Flux.offInit(this.onInit);
   }
 
-  onInit() {
-    // Set state
-    this.setState({init: true});
-  }
-
   getChildContext() {
     return {
       config: this._config
     };
+  }
+
+  onInit() {
+    // Set state
+    this.setState({init: true});
   }
 
   onUpdateView(message, callback) {

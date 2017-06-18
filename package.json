@@ -1,6 +1,6 @@
 {
   "name": "arkhamjs-native",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "An ES6 Flux library for React Native",
   "license": "MIT",
   "main": "index.js",
@@ -60,6 +60,7 @@
     "eslint-plugin-react-native": "^2.3.2",
     "isomorphic-fetch": "^2.2.1",
     "jest": "^20.0.4",
+    "jest-haste-map": "^20.0.4",
     "mock-async-storage": "^1.0.3",
     "regenerator-runtime": "^0.10.5"
   },

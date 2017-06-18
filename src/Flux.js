@@ -2,6 +2,7 @@ import EventEmitter from 'events';
 import {AsyncStorage} from 'react-native';
 import Immutable, {Map} from 'immutable';
 import Promise from 'bluebird';
+import ArkhamConstants from './constants/ArkhamConstants';
 
 /**
  * Copyright (c) 2017, Nitrogen Labs, Inc.
@@ -47,11 +48,7 @@ class Flux extends EventEmitter {
     // Debug modes
     this.DEBUG_DISABLED = 0;
     this.DEBUG_LOGS = 1;
-    this.DEBUG_DISPATCH = 2;
-    
-    // Events
-    this.ARKHAMJS_INIT = 'ARKHAMJS_INIT';
-    
+
     // Configuration
     this.config(options);
   }
@@ -403,7 +400,7 @@ class Flux extends EventEmitter {
    * @param {function} [listener] The callback associated with the subscribed event.
    */
   onInit(listener) {
-    this.on(this.ARKHAMJS_INIT, listener);
+    this.on(ArkhamConstants.INIT, listener);
   }
   
   /**
@@ -412,7 +409,7 @@ class Flux extends EventEmitter {
    * @param {function} [listener] The callback associated with the subscribed event.
    */
   offInit(listener) {
-    this.off(this.ARKHAMJS_INIT, listener);
+    this.off(ArkhamConstants.INIT, listener);
   }
   
   /**
@@ -433,7 +430,7 @@ class Flux extends EventEmitter {
    */
   registerStore(StoreClass) {
     const onRegister = (clsObj => {
-      this.emit(this.ARKHAMJS_INIT);
+      this.emit(ArkhamConstants.INIT);
       return clsObj;
     });
     

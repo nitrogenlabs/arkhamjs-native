@@ -34,11 +34,11 @@ describe('Arkham', () => {
     const props = {
       stores: [TestStore]
     };
+    
     rendered = new Arkham(props);
   });
 
   it('should render null initially', () => {
-    // rendered = renderer.create(<Arkham/>);
     return expect(rendered.render()).toBe(null);
   });
 

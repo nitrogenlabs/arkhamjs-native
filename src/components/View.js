@@ -5,8 +5,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Immutable from 'immutable';
-import Flux from '../../src/Flux';
-import ArkhamConstants from '../../src/constants/ArkhamConstants';
+import Flux from '../Flux';
+import ArkhamConstants from '../constants/ArkhamConstants';
 
 /**
  * View
@@ -85,7 +85,7 @@ export default class View extends React.Component {
     this.props.history.goBack();
   }
 
-  onGoReplace() {
+  onGoReplace(data) {
     const {params, url} = this.getNavigationParams(data);
     this.props.history.replace(url, {params});
   }

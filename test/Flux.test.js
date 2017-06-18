@@ -133,6 +133,7 @@ describe('Flux', () => {
       consoleSpy = jest.spyOn(console, 'error');
 
       // Method
+      Flux._debugLevel = Flux.DEBUG_LOGS;
       Flux.debugError(msg);
     });
 
@@ -154,6 +155,7 @@ describe('Flux', () => {
       consoleSpy = jest.spyOn(console, 'info');
 
       // Method
+      Flux._debugLevel = Flux.DEBUG_LOGS;
       Flux.debugInfo(msg);
     });
 
@@ -175,6 +177,7 @@ describe('Flux', () => {
       consoleSpy = jest.spyOn(console, 'log');
 
       // Method
+      Flux._debugLevel = Flux.DEBUG_LOGS;
       Flux.debugLog(msg);
     });
 
@@ -298,7 +301,6 @@ describe('Flux', () => {
       // Method
       return Flux.getSessionData(key)
         .then(testVal => {
-          console.log('testVal', testVal, val);
           expect(testVal).toBe(val);
         });
     });
