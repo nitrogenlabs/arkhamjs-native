@@ -36,16 +36,16 @@ Using [npm](https://www.npmjs.com/):
 
 ```js
 // Using an ES6 transpiler for React Native apps
-import {Flux as FluxNative, Store} from 'arkhamjs-native';
+import {Flux, Store} from 'arkhamjs-native';
 
 // not using an ES6 transpiler
-var Flux = require('arkhamjs-native').FluxNative;
+var Flux = require('arkhamjs-native').Flux;
 var Store = require('arkhamjs-native').Store;
 ```
 
 **Store:**
 ```js
-import {FluxNative as Flux, Store} from 'arkhamjs-native';
+import {Flux, Store} from 'arkhamjs-native';
 import {Map} from 'immutable';
 
 export default class AppStore extends Store {
@@ -74,7 +74,7 @@ export default class AppStore extends Store {
 
 **Action:**
 ```js
-import {FluxNative as Flux} from 'arkhamjs-native';
+import {Flux} from 'arkhamjs-native';
 
 const AppActions = {
   test: str => {
@@ -89,7 +89,7 @@ export default AppActions;
 ```js
 import React, {Component} from 'react';
 import {Text} from 'react-native';
-import {FluxNative as Flux} from 'arkhamjs-native';
+import {Flux} from 'arkhamjs-native';
 import AppStore from 'stores/AppStore';
 import AppActions from 'services/AppActions';
 

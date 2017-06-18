@@ -8,13 +8,13 @@ import Promise from 'bluebird';
  * Copyrights licensed under the MIT License. See the accompanying LICENSE file for terms.
  */
 
-class FluxNative extends EventEmitter {
+class Flux extends EventEmitter {
   /**
    * Create a new instance of Flux.  Note that the Flux object
    * is a Singleton pattern, so only one should ever exist.
    *
    * @constructor
-   * @this {FluxNative}
+   * @this {Flux}
    */
   constructor(options = {}) {
     super();
@@ -151,12 +151,15 @@ class FluxNative extends EventEmitter {
     this._name = this._options.name || 'arkhamjs';
     
     // Cache
-    this._useCache = this._options.useCache ? true : false;
+    this._useCache = this._options.useCache !== false;
     
     if(this._useCache) {
       this._getCache();
     }
-    
+
+    // Output immutable objects
+    this._useImmutable = this._options.useImmutable !== false;
+
     // Debug
     this._debugLevel = this._options.debugLevel || this.DEBUG_DISABLED;
   }
@@ -298,12 +301,20 @@ class FluxNative extends EventEmitter {
     if(this._useCache) {
       promise = this.setSessionData(this._name, this._store);
     }
-    
-    if(!silent) {
-      promise.then(() => this.emit(type, data));
+
+    if(this._useImmutable) {
+      if(!silent) {
+        promise.then(() => this.emit(type, data));
+      }
+
+      return promise.then(() => action);
+    } else {
+      if(!silent) {
+        promise.then(() => this.emit(type, data.toJS()));
+      }
+
+      return promise.then(() => action.toJS());
     }
-    
-    return promise.then(() => action);
   }
   
   /**
@@ -337,7 +348,16 @@ class FluxNative extends EventEmitter {
   getSessionData(key) {
     try {
       return AsyncStorage.getItem(key)
-        .then(value => Immutable.fromJS(JSON.parse(value || '""')))
+        .then(value => {
+          value = JSON.parse(value || '""');
+
+          console.log('getSessionData::value', this._useImmutable, value);
+          if(this._useImmutable) {
+            return Immutable.fromJS(value);
+          } else {
+            return value;
+          }
+        })
         .catch(Promise.resolve(null));
     }
     catch(error) {
@@ -354,13 +374,26 @@ class FluxNative extends EventEmitter {
    * @returns {Map} the state object.
    */
   getStore(name = '', defaultValue) {
+    let store;
+
+    // Make the defaultValue immutable if not already
+    if(!Immutable.Iterable.isIterable(defaultValue)) {
+      defaultValue = defaultValue ? Immutable.fromJS(defaultValue) : null;
+    }
+
     if(Array.isArray(name)) {
-      return this._store.getIn(name, defaultValue);
+      store = this._store.getIn(name, defaultValue);
     }
     else if(name !== '') {
-      return this._store.get(name, defaultValue);
+      store = this._store.get(name, defaultValue);
     } else {
-      return this._store || Map();
+      store = this._store || Map();
+    }
+
+    if(this._useImmutable) {
+      return store;
+    } else {
+      return Immutable.Iterable.isIterable(store) ? store.toJS() : store;
     }
   }
   
@@ -455,5 +488,5 @@ class FluxNative extends EventEmitter {
   }
 }
 
-const fluxNative = new FluxNative((window || {}).arkhamjs);
-export default fluxNative;
+const flux = new Flux();
+export default flux;

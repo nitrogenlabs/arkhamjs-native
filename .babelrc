@@ -1,9 +1,13 @@
 {
-  "presets": ["es2015", "react-native-stage-0"],
   "env": {
     "production": {
-      "presets": ["babili"],
-      "plugins": ["remove-comments"]
+      "presets": ["babili"]
     }
-  }
+  },
+  "presets": [
+    "es2015",
+    "env",
+    "react-native-stage-0"
+  ],
+  "retainLines": true
 }
