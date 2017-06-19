@@ -59,7 +59,7 @@ class Flux extends EventEmitter {
   }
   
   _getCache() {
-    return this.getSessionData(this._name).then(data => {
+    return this.getSessionData(this._name, true).then(data => {
       if(Map.isMap(data)) {
         this._store = data;
         return data;
@@ -89,7 +89,7 @@ class Flux extends EventEmitter {
       
       // Get cached data
       if(this._useCache) {
-        promise = this.getSessionData(this._name)
+        promise = this.getSessionData(this._name, true)
           .then(data => {
             const cache = Map.isMap(data) ? data : Map();
             
@@ -340,16 +340,16 @@ class Flux extends EventEmitter {
    * Gets data from session storage.
    *
    * @param {string} key The key for data.
+   * @param {string} immutable Return immutable object.
    * @returns {Immutable} the data object associated with the key.
    */
-  getSessionData(key) {
+  getSessionData(key, immutable = false) {
     try {
       return AsyncStorage.getItem(key)
         .then(value => {
           value = JSON.parse(value || '""');
-
-          console.log('getSessionData::value', this._useImmutable, value);
-          if(this._useImmutable) {
+          
+          if(immutable || this._useImmutable) {
             return Immutable.fromJS(value);
           } else {
             return value;

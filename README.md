@@ -266,9 +266,10 @@ deregister them at once.
 
 ### Storage
 
-#### `getSessionData(key)`
+#### `getSessionData(key, immutable)`
 Get an object from sessionStorage.
 * [`key`] \(*String*): Key of object to retrieve.
+* [`immutable`] \(*Boolean*): Return an immutable object. *Default: false*
 
 ##### Returns
 A promise. Promise returns an immutable object or string associated with the key.
