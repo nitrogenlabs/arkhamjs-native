@@ -32,7 +32,7 @@ Using [npm](https://www.npmjs.com/):
 
     $ npm install arkhamjs-native
 
-###React Native Usage
+### React Native Usage
 
 ```js
 import {Flux, Store} from 'arkhamjs-native';

@@ -3,3 +3,4 @@
 /node_modules
 /test
 .babelrc
+package-lock.json

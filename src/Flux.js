@@ -374,7 +374,7 @@ class Flux extends EventEmitter {
     let store;
 
     // Make the defaultValue immutable if not already
-    if(!Immutable.Iterable.isIterable(defaultValue)) {
+    if(this._useImmutable && typeof defaultValue === 'object' && !Immutable.Iterable.isIterable(defaultValue)) {
       defaultValue = defaultValue ? Immutable.fromJS(defaultValue) : null;
     }
 
