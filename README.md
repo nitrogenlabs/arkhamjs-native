@@ -250,18 +250,16 @@ Get the store class object.
 ##### Returns
 A store class object.
 
-#### `registerStore(Class|Array)`
-Registers the store with Flux. If registering multiple stores, you may use an array of classes to
-register them at once.
-* [`Class`] \(*Class*|*Array*): The store class(s) to add to Flux.
+#### `registerStores(array)`
+Registers stores with Flux. Use an array of classes to register multiple.
+* [`Class`] \(*array*): The store class(s) to add to Flux.
 
 ##### Returns
-A new object from the class. If using an array, the return result will be the array of class objects.
+An array of store class objects.
 
-#### `deregisterStore(name)`
-Deregisters a store from Flux. If deregistering multiple stores, you may use an array of names to
-deregister them at once.
-* [`name`] \(*String*|*Array*): Name of store(s) to remove from Flux.
+#### `deregisterStores(array)`
+Deregisters stores from Flux. Use an array of names to deregister multiple stores.
+* [`name`] \(*array*): Name of store(s) to remove from Flux.
 
 
 ### Storage

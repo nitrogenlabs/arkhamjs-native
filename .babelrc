@@ -1,13 +1,16 @@
 {
-  "env": {
-    "production": {
-      "presets": ["babili"]
-    }
-  },
   "presets": [
-    "es2015",
-    "env",
-    "react-native-stage-0"
+    [
+      "es2015",
+      {
+        "modules": false
+      }
+    ],
+    "react",
+    "stage-0"
   ],
-  "retainLines": true
+  "plugins": [
+    "transform-es2015-modules-commonjs",
+    "dynamic-import-node"
+  ]
 }

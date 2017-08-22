@@ -2,18 +2,33 @@
  * Copyright (c) 2017, Nitrogen Labs, Inc.
  * Copyrights licensed under the MIT License. See the accompanying LICENSE file for terms.
  */
-import React, {Component} from 'react';
+import * as PropTypes from 'prop-types';
+import * as React from 'react';
 import {NativeRouter, Switch} from 'react-router-native';
-import PropTypes from 'prop-types';
-import Flux from '../Flux';
-import ArkhamConstants from '../constants/ArkhamConstants';
+import {ArkhamConstants} from '../../constants/ArkhamConstants';
+import {Flux, FluxOptions} from '../../Flux/Flux';
+import {Store} from '../../Store/Store';
+
+export interface ArkhamProps {
+  readonly children?: JSX.Element;
+  readonly className?: string;
+  readonly config?: FluxOptions;
+  readonly routes?: string[];
+  readonly stores?: Store[];
+}
+
+export interface ArkhamState {
+  init: boolean;
+}
 
 /**
  * Arkham
  * @type {Component}
  */
-export default class Arkham extends Component {
-  static propTypes = {
+export class Arkham extends React.Component<ArkhamProps, ArkhamState> {
+  private config: FluxOptions;
+  
+  static propTypes: object = {
     children: PropTypes.element,
     className: PropTypes.string,
     config: PropTypes.object,
@@ -21,17 +36,17 @@ export default class Arkham extends Component {
     stores: PropTypes.array
   };
 
-  static defaultProps = {
+  static defaultProps: object = {
     config: {},
     routes: [],
     stores: []
   };
 
-  static childContextTypes = {
+  static childContextTypes: object = {
     config: PropTypes.object
   };
 
-  constructor(props) {
+  constructor(props: ArkhamProps) {
     super(props);
 
     // Methods
@@ -44,52 +59,48 @@ export default class Arkham extends Component {
     };
 
     // Initialize Flux with custom configuration
-    this._config = props.config;
-    Flux.config(this._config);
+    this.config = props.config;
+    Flux.config(this.config);
   }
 
-  componentWillMount() {
+  componentWillMount(): void {
     // Add listeners
     Flux.onInit(this.onInit);
-
-    // Stores
-    const {stores} = this.props;
-
+  
     // Register stores
-    if(stores.length) {
-      Flux.registerStore(this.props.stores);
-    }
+    const {stores} = this.props;
+    Flux.registerStores(stores);
   }
 
-  componentWillUnmount() {
+  componentWillUnmount(): void {
     // Remove listeners
     Flux.offInit(this.onInit);
   }
 
-  getChildContext() {
+  getChildContext(): object {
     return {
-      config: this._config
+      config: this.config
     };
   }
 
-  onInit() {
+  onInit(): void {
     // Set state
     this.setState({init: true});
   }
 
-  onUpdateView(message, callback) {
+  onUpdateView(): void {
     // Dispatch event to indicate view has changed
-    Flux.dispatch(ArkhamConstants.UPDATE_VIEW);
+    Flux.dispatch({type: ArkhamConstants.UPDATE_VIEW});
 
     // Check custom user confirmation
-    if(this.props.config.getUserConfirmation) {
-      return this.props.config.getUserConfirmation(message, callback);
-    } else {
-      return callback(true);
+    const {getUserConfirmation} = this.config;
+    
+    if(getUserConfirmation) {
+      getUserConfirmation();
     }
   }
 
-  render() {
+  render(): JSX.Element {
     if(this.state.init) {
       return (
         <NativeRouter>
@@ -102,4 +113,4 @@ export default class Arkham extends Component {
 
     return null;
   }
-};
+}

@@ -1,5 +1,5 @@
-import Store from '../src/Store';
-import {Map} from 'immutable';
+import {isObject} from 'lodash';
+import {Store} from './Store';
 
 describe('Store', () => {
   let store;
@@ -9,22 +9,15 @@ describe('Store', () => {
   });
 
   describe('initial state', () => {
-    it('should return an immutable map', () => {
-      expect(Map.isMap(store.state)).toBe(true);
-    });
-  });
-
-  describe('#getInitialState', () => {
-    it('should return an immutable map', () => {
-      const state = store.getInitialState();
-      expect(Map.isMap(state)).toBe(true);
+    it('should return an object', () => {
+      expect(isObject(store.state)).toBe(true);
     });
   });
 
   describe('#initialState', () => {
     it('should return an object', () => {
       const state = store.initialState();
-      expect(Map.isMap(state)).toBe(false);
+      expect(isObject(state)).toBe(true);
     });
   });
 

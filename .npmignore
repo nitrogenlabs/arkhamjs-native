@@ -1,6 +1,9 @@
-/build
-/src
-/node_modules
-/test
-.babelrc
+.idea
+docs
+node_modules
+.travis.yml
 package-lock.json
+tslint.json
+~.bash_profile
+*.test.ts
+*.test.tsx
