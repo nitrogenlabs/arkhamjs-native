@@ -4,7 +4,12 @@
     "allowSyntheticDefaultImports": true,
     "declaration": true,
     "jsx": "react",
-    "lib": ["es6", "dom"],
+    "lib": [
+      "dom",
+      "es2015",
+      "es5",
+      "es6"
+    ],
     "module": "es2015",
     "moduleResolution": "node",
     "noImplicitAny": false,
@@ -13,22 +18,32 @@
     "noStrictGenericChecks": true,
     "noUnusedLocals": true,
     "outDir": "dist",
-    "pretty": false,
     "preserveConstEnums": true,
+    "pretty": false,
     "removeComments": true,
     "rootDir": "src",
-    "skipLibCheck": true,
     "sourceMap": true,
+    "strictNullChecks": false,
     "target": "es2015"
   },
+  "compileOnSave": false,
+  "exclude": [
+    "**/*.test.*",
+    "android",
+    "build",
+    "dist",
+    "docs",
+    "ios",
+    "node_modules",
+    "test"
+  ],
   "include": [
     "./src/**/*"
   ],
-  "exclude": [
-    "**/*.test.*",
-    "./dist",
-    "./docs",
-    "./node_modules",
-    "./test"
+  "types": [
+    "./src/lib/types",
+    "react",
+    "react-native",
+    "jest"
   ]
 }

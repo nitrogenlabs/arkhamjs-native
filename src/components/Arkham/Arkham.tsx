@@ -7,14 +7,13 @@ import * as React from 'react';
 import {NativeRouter, Switch} from 'react-router-native';
 import {ArkhamConstants} from '../../constants/ArkhamConstants';
 import {Flux, FluxOptions} from '../../Flux/Flux';
-import {Store} from '../../Store/Store';
 
 export interface ArkhamProps {
   readonly children?: JSX.Element;
   readonly className?: string;
   readonly config?: FluxOptions;
   readonly routes?: string[];
-  readonly stores?: Store[];
+  readonly stores?: any[];
 }
 
 export interface ArkhamState {

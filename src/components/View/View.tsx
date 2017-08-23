@@ -2,7 +2,7 @@
  * Copyright (c) 2017, Nitrogen Labs, Inc.
  * Copyrights licensed under the MIT License. See the accompanying LICENSE file for terms.
  */
-import {History} from 'history';
+import {History, Location} from 'history';
 import * as PropTypes from 'prop-types';
 import * as React from 'react';
 import {ArkhamConstants} from '../../constants/ArkhamConstants';
@@ -30,7 +30,7 @@ export interface ViewProps {
  * View
  * @type {Component}
  */
-export class View<P extends ViewProps, S> extends React.Component<P, S> {
+export class View extends React.Component<ViewProps, object> {
   static propTypes: object = {
     history: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired,

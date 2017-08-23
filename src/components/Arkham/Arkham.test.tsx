@@ -1,4 +1,3 @@
-import {SpyInstance} from 'jest';
 import * as React from 'react';
 import * as renderer from 'react-test-renderer';
 import {Store} from '../../Store/Store';
@@ -40,6 +39,6 @@ describe('Arkham', () => {
   });
 
   it('should render null initially', () => {
-    return expect(rendered).toBeDefined();
+    expect(rendered).toBeDefined();
   });
 });

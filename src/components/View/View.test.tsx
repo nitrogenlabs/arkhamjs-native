@@ -1,3 +1,4 @@
+import {createMemoryHistory, History, Location} from 'history';
 import * as React from 'react';
 import * as renderer from 'react-test-renderer';
 import {View} from './View';
@@ -7,14 +8,14 @@ describe('View', () => {
 
   beforeAll(() => {
     // Render
-    const history = {};
-    const location = {};
+    const history: History = createMemoryHistory();
+    const location: Location = {hash: '', key: '', pathname: '', search: '', state: ''};
     const match = {};
 
     rendered = renderer.create(<View history={history} location={location} match={match}/>);
   });
 
   it('should render null initially', () => {
-    return expect(rendered).toBeDefined();
+    expect(rendered).toBeDefined();
   });
 });
