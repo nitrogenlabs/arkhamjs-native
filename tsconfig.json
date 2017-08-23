@@ -22,6 +22,7 @@
     "pretty": false,
     "removeComments": true,
     "rootDir": "src",
+    "skipLibCheck": true,
     "sourceMap": true,
     "strictNullChecks": false,
     "target": "es2015"
