@@ -11,7 +11,7 @@ The framework is very small, coming in at about 7kb. The bulk of your app should
 All data is stored within a single, immutable store. The data can be accessed through all your views and components. Data is organized into multiple stores within the single store.
 
 #### Immutability
-To prevent object referencing, we use immutable objects, using ImmutableJS. When a state changes in a ReactJS component, the state's property is not the only item that is changed, the item it references is also updated. To prevent passing around an object between different scopes, immutable objects give your data a one way update path.
+To prevent object referencing, we use immutable objects. When a state changes in a ReactJS component, the state's property is not the only item that is changed, the item it references is also updated. To prevent passing around an object between different scopes, immutable objects give your data a one way update path.
 
 #### Cache
 Your single store id stored in sessionStorage by default. While this can be turned off in your options, it can be very useful when saving state.
@@ -34,15 +34,12 @@ Using [npm](https://www.npmjs.com/):
 
 ### React Native Usage
 
-```js
-import {Flux, Store} from 'arkhamjs-native';
-
 **Store:**
 ```js
 import {Flux, Store} from 'arkhamjs-native';
 import {Map} from 'immutable';
 
-export default class AppStore extends Store {
+export class AppStore extends Store {
   constructor() {
     super('app');
   }
@@ -70,13 +67,11 @@ export default class AppStore extends Store {
 ```js
 import {Flux} from 'arkhamjs-native';
 
-const AppActions = {
+export const AppActions = {
   test: str => {
     Flux.dispatch({type: 'APP_TEST', demo: str});
   }
 };
-
-export default AppActions;
 ```
 
 **Component:**
@@ -84,10 +79,10 @@ export default AppActions;
 import React, {Component} from 'react';
 import {Text} from 'react-native';
 import {Flux} from 'arkhamjs-native';
-import AppStore from 'stores/AppStore';
-import AppActions from 'services/AppActions';
+import {AppStore} from 'stores/AppStore';
+import {AppActions} from 'services/AppActions';
 
-export default class AppView extends Component {
+export class AppView extends Component {
   constructor(props) {
     super(props);
     
@@ -120,8 +115,7 @@ export default class AppView extends Component {
     Flux.on('APP_TEST', this.onAppTest);
     
     // Register stores
-    Flux.registerStore([AppStore]);
-   
+    Flux.registerStores([AppStore]);
   }
 
   componentWillUnmount() {
@@ -156,8 +150,6 @@ export default class AppView extends Component {
     }
   }
 };
-
-export default AppActions;
 ```
 
 ## Flux API
