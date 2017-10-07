@@ -29,15 +29,20 @@ The most important factor in choosing a framework is how easy it is to build wit
 ### Installation
 
 Using [npm](https://www.npmjs.com/):
-
-    $ npm install arkhamjs-native
+```bash
+$ npm install arkhamjs-native
+```
+or
+```bash
+$ yarn add arkhamjs-native
+```
 
 ### React Native Usage
 
 **Store:**
 ```js
 import {Flux, Store} from 'arkhamjs-native';
-import {Map} from 'immutable';
+import {set} from 'lodash';
 
 export class AppStore extends Store {
   constructor() {
@@ -53,9 +58,9 @@ export class AppStore extends Store {
   onAction(type, data, state) {
     switch(type) {
       case 'APP_TEST':
-        return state.set('test', data.get('demo'));
+        return set(state, 'test', data.demo);
       case 'APP_RESET':
-        return Map(this.initialState());
+        return this.initialState();
       default:
         return state;
     }
@@ -76,13 +81,13 @@ export const AppActions = {
 
 **Component:**
 ```js
-import React, {Component} from 'react';
+import React from 'react';
 import {Text} from 'react-native';
-import {Flux} from 'arkhamjs-native';
+import {Flux, FluxDebugLevel} from 'arkhamjs-native';
 import {AppStore} from 'stores/AppStore';
 import {AppActions} from 'services/AppActions';
 
-export class AppView extends Component {
+export class AppView extends React.Component {
   constructor(props) {
     super(props);
     
@@ -98,7 +103,7 @@ export class AppView extends Component {
       cache: true,
       
       // Enable debugger
-      debugLevel: Flux.DEBUG_DISPATCH,
+      debugLevel: FluxDebugLevel.DISPATCH,
       
       // Name of your app
       name: 'MyApp'
@@ -133,7 +138,7 @@ export class AppView extends Component {
   
   onAppTest() {
     // Gets the immutable store
-    const myTest = Flux.getStore(['app', 'test']);
+    const myTest = Flux.getStore('app.test');
     
     // Show the output in the console
     console.log('onAppTest::myTest', myTest);

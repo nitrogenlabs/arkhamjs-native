@@ -7,7 +7,7 @@ import {Flux, FluxAction} from '../../Flux/Flux';
 
 /**
  * ArkhamActions
- * @type {object}
+ *
  */
 export class ArkhamActions {
   static goBack(): Promise<FluxAction> {
