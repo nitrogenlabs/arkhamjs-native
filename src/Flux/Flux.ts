@@ -36,7 +36,7 @@ export interface FluxOptions {
 
 export interface FluxAction {
   readonly type: string;
-  
+
   readonly [key: string]: any;
 }
 
@@ -57,7 +57,7 @@ export class FluxFramework extends EventEmitter {
     useCache: true
   };
   private options: FluxOptions = this.defaultOptions;
-  
+
   /**
    * Create a new instance of Flux.  Note that the Flux object
    * is a Singleton pattern, so only one should ever exist.
@@ -67,7 +67,7 @@ export class FluxFramework extends EventEmitter {
    */
   constructor() {
     super();
-    
+
     // Methods
     this.clearAppData = this.clearAppData.bind(this);
     this.config = this.config.bind(this);
@@ -89,11 +89,11 @@ export class FluxFramework extends EventEmitter {
     this.registerStores = this.registerStores.bind(this);
     this.setSessionData = this.setSessionData.bind(this);
     this.setStore = this.setStore.bind(this);
-    
+
     // Configuration
     this.config(this.defaultOptions);
   }
-  
+
   /**
    * Removes all app data from sessionStorage.
    *
@@ -108,9 +108,9 @@ export class FluxFramework extends EventEmitter {
           const storeCls: Store = this.storeClasses[storeName];
           this.store[storeCls.name] = cloneDeep(storeCls.initialState());
         });
-      
+
       const {name, useCache} = this.options;
-      
+
       if(useCache) {
         return AsyncStorage.setItem(name, JSON.stringify(this.store))
           .then(() => Promise.resolve(true))
@@ -122,7 +122,7 @@ export class FluxFramework extends EventEmitter {
       return Promise.resolve(false);
     }
   }
-  
+
   /**
    * Set configuration options.
    *
@@ -131,13 +131,13 @@ export class FluxFramework extends EventEmitter {
   config(options: FluxOptions): void {
     this.options = {...this.defaultOptions, ...options};
     const {useCache} = this.options;
-    
+
     // Cache
     if(useCache) {
       this.getCache();
     }
   }
-  
+
   /**
    * Logs errors in the console. Will also call the debugErrorFnc method set in the config.
    *
@@ -146,16 +146,16 @@ export class FluxFramework extends EventEmitter {
    */
   debugError(...obj): void {
     const {debugErrorFnc, debugLevel} = this.options;
-    
+
     if(debugLevel) {
       console.error(...obj);
     }
-    
+
     if(debugErrorFnc) {
       debugErrorFnc(debugLevel, ...obj);
     }
   }
-  
+
   /**
    * Logs informational messages to the console. Will also call the debugInfoFnc method set in the config.
    *
@@ -164,16 +164,16 @@ export class FluxFramework extends EventEmitter {
    */
   debugInfo(...obj): void {
     const {debugInfoFnc, debugLevel} = this.options;
-    
+
     if(debugLevel) {
       console.info(...obj);
     }
-    
+
     if(debugInfoFnc) {
       debugInfoFnc(debugLevel, ...obj);
     }
   }
-  
+
   /**
    * Logs data in the console. Only logs when in debug mode.  Will also call the debugLogFnc method set in the config.
    *
@@ -182,16 +182,16 @@ export class FluxFramework extends EventEmitter {
    */
   debugLog(...obj): void {
     const {debugLogFnc, debugLevel} = this.options;
-    
+
     if(debugLevel) {
       console.log(...obj);
     }
-    
+
     if(debugLogFnc) {
       debugLogFnc(debugLevel, ...obj);
     }
   }
-  
+
   /**
    * Removes a key from sessionStorage.
    *
@@ -207,7 +207,7 @@ export class FluxFramework extends EventEmitter {
       return Promise.resolve(false);
     }
   }
-  
+
   /**
    * De-registers named stores.
    *
@@ -216,7 +216,7 @@ export class FluxFramework extends EventEmitter {
   deregisterStores(storeNames: string[]): void {
     storeNames.forEach((name: string) => this.deregister(name));
   }
-  
+
   /**
    * Dispatches an action to all stores.
    *
@@ -228,15 +228,15 @@ export class FluxFramework extends EventEmitter {
   dispatch(action: FluxAction, silent: boolean = false): Promise<FluxAction> {
     action = cloneDeep(action);
     const {type, ...data} = action;
-    
+
     // Require a type
     if(!type) {
       return Promise.resolve(action);
     }
-    
+
     const oldState = cloneDeep(this.store);
     const {useCache, debugLevel, name} = this.options;
-    
+
     // When an action comes in, it must be completely handled by all stores
     Object
       .keys(this.storeClasses)
@@ -246,13 +246,13 @@ export class FluxFramework extends EventEmitter {
         this.store[storeName] = cloneDeep(storeCls.onAction(type, data, state)) || cloneDeep(state);
         storeCls.state = this.store[storeName];
       });
-    
+
     if(debugLevel > FluxDebugLevel.LOGS) {
       const hasChanged = !isEqual(this.store, oldState);
       const updatedLabel = hasChanged ? 'Changed State' : 'Unchanged State';
       const updatedColor = hasChanged ? '#00d484' : '#959595';
       const updatedStore = cloneDeep(this.store);
-      
+
       if(console.groupCollapsed) {
         console.groupCollapsed(`FLUX DISPATCH: ${type}`);
         console.log('%c Action: ', 'color: #00C4FF', action);
@@ -266,21 +266,21 @@ export class FluxFramework extends EventEmitter {
         console.log(`${updatedLabel}: `, updatedStore);
       }
     }
-    
+
     // Save cache in session storage
     let promise: Promise<boolean> = Promise.resolve(false);
-    
+
     if(useCache) {
       promise = this.setSessionData(name, this.store);
     }
-    
+
     if(!silent) {
       promise.then(() => this.emit(type, data));
     }
-    
+
     return promise.then(() => action);
   }
-  
+
   /**
    * Enables the console debugger.
    *
@@ -292,7 +292,7 @@ export class FluxFramework extends EventEmitter {
   enableDebugger(level: number = FluxDebugLevel.DISPATCH): void {
     this.options = {...this.options, debugLevel: level};
   }
-  
+
   /**
    * Get a store object that is registered with Flux
    *
@@ -302,7 +302,7 @@ export class FluxFramework extends EventEmitter {
   getClass(name: string = ''): Store {
     return this.storeClasses[name];
   }
-  
+
   /**
    * Get the current Flux options.
    *
@@ -311,7 +311,7 @@ export class FluxFramework extends EventEmitter {
   getOptions(): FluxOptions {
     return this.options;
   }
-  
+
   /**
    * Get data from session storage.
    *
@@ -327,7 +327,7 @@ export class FluxFramework extends EventEmitter {
       return Promise.resolve(null);
     }
   }
-  
+
   /**
    * Get the current state object.
    *
@@ -338,16 +338,16 @@ export class FluxFramework extends EventEmitter {
    */
   getStore(name: string | string[] = '', defaultValue?): any {
     let storeValue;
-    
+
     if(name === '') {
       storeValue = this.store || {};
     } else {
       storeValue = get(this.store, name);
     }
-    
+
     return cloneDeep(storeValue) || defaultValue;
   }
-  
+
   /**
    * Adds an initialization listener.
    *
@@ -356,7 +356,7 @@ export class FluxFramework extends EventEmitter {
   onInit(listener: () => void): void {
     this.on(ArkhamConstants.INIT, listener);
   }
-  
+
   /**
    * Removes the initialization listener.
    *
@@ -365,7 +365,7 @@ export class FluxFramework extends EventEmitter {
   offInit(listener: () => void): void {
     this.off(ArkhamConstants.INIT, listener);
   }
-  
+
   /**
    * Removes an event listener.
    *
@@ -375,7 +375,7 @@ export class FluxFramework extends EventEmitter {
   off(eventType: string, listener): void {
     this.removeListener(eventType, listener);
   }
-  
+
   /**
    * Registers new Stores.
    *
@@ -390,7 +390,7 @@ export class FluxFramework extends EventEmitter {
         return storeClasses;
       });
   }
-  
+
   /**
    * Saves data to the session storage.
    *
@@ -400,7 +400,7 @@ export class FluxFramework extends EventEmitter {
    */
   setSessionData(key: string, value): Promise<boolean> {
     value = value && JSON.stringify(value);
-    
+
     try {
       return AsyncStorage.setItem(key, value)
         .then(() => true)
@@ -409,7 +409,7 @@ export class FluxFramework extends EventEmitter {
       return Promise.resolve(false);
     }
   }
-  
+
   /**
    * Sets the current state object.
    *
@@ -422,48 +422,48 @@ export class FluxFramework extends EventEmitter {
       this.store = set(cloneDeep(this.store), name, cloneDeep(value));
     }
   }
-  
+
   private deregister(name: string = ''): void {
     delete this.storeClasses[name];
     delete this.store[name];
   }
-  
+
   private getCache(): object {
     const {name} = this.options;
-    
+
     return this.getSessionData(name)
       .then((data = {}) => {
         if(isObject(data)) {
           this.store = data;
           return data;
         }
-        
+
         return {};
       });
   }
-  
+
   private register(StoreClass): Promise<Store> {
     if(!StoreClass) {
       throw Error('Class is undefined. Cannot register with Flux.');
     }
-    
+
     let promise: Promise<any> = Promise.resolve();
     const clsType: string = StoreClass.constructor.toString().substr(0, 5);
-    
+
     if(clsType !== 'class' && clsType !== 'funct') {
       throw Error(`${StoreClass} is not a class. Cannot register with Flux.`);
     }
-    
+
     // Create store object
     const storeCls = new StoreClass();
     const {name: storeName} = storeCls;
     const {name, useCache} = this.options;
-    
+
     if(!this.storeClasses[storeName]) {
-      
+
       // Save store object
       this.storeClasses[storeName] = storeCls;
-      
+
       // Get cached data
       if(useCache) {
         promise = this.getSessionData(name)
@@ -473,7 +473,7 @@ export class FluxFramework extends EventEmitter {
             const store = cloneDeep(this.store);
             store[storeName] = cloneDeep(state);
             this.store = store;
-            
+
             // Save cache in session storage
             this.setSessionData(name, this.store);
             return this.storeClasses[storeName];
@@ -486,7 +486,7 @@ export class FluxFramework extends EventEmitter {
         this.store = store;
       }
     }
-    
+
     return promise.then(() => this.storeClasses[storeName]);
   }
 }

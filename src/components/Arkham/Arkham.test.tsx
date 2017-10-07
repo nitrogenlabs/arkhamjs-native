@@ -1,3 +1,4 @@
+import {set} from 'lodash';
 import * as React from 'react';
 import * as renderer from 'react-test-renderer';
 import {Store} from '../../Store/Store';
@@ -22,7 +23,7 @@ describe('Arkham', () => {
     onAction(type, data, state): object {
       switch(type) {
         case 'TEST_EVENT':
-          return state.set('testAction', data.get('testVar'));
+          return set(state, 'testAction', data.testVar);
         default:
           return state;
       }
