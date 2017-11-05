@@ -150,6 +150,7 @@
     "no-ex-assign": true,
     "no-extra-boolean-cast": true,
     "no-extra-semi": true,
+    "no-implicit-dependencies": false,
     "no-inner-declarations": [
       true,
       "both"
