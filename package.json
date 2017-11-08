@@ -1,6 +1,6 @@
 {
   "name": "arkhamjs-native",
-  "version": "2.0.9",
+  "version": "2.0.10",
   "description": "An ES6 Flux library for React Native",
   "license": "MIT",
   "main": "index.js",
@@ -34,18 +34,19 @@
     "lodash": "^4.17.4",
     "prop-types": "^15.6.0",
     "react": "^16.0.0",
-    "react-native": "0.50.1",
+    "react-native": "0.50.2",
     "react-router-native": "^4.2.0"
   },
   "devDependencies": {
     "@types/history": "^4.6.1",
     "@types/jest": "^21.1.5",
-    "@types/node": "^8.0.47",
+    "@types/node": "^8.0.50",
     "@types/prop-types": "^15.5.2",
-    "@types/react": "^16.0.20",
-    "@types/react-native": "^0.50.0",
+    "@types/react": "^16.0.21",
+    "@types/react-native": "^0.50.2",
     "@types/react-router-native": "^4.0.1",
     "@types/react-test-renderer": "^16.0.0",
+    "babel-core": "^6.26.0",
     "babel-jest": "^21.2.0",
     "babel-plugin-dynamic-import-node": "^1.1.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
@@ -61,7 +62,7 @@
     "react-scripts-ts": "^2.8.0",
     "react-test-renderer": "^16.0.0",
     "regenerator-runtime": "^0.11.0",
-    "ts-jest": "^21.1.4",
+    "ts-jest": "^21.2.0",
     "tslint": "^5.8.0",
     "tslint-eslint-rules": "^4.1.1",
     "tslint-react": "^3.2.0",
@@ -89,7 +90,8 @@
       "js",
       "jsx",
       "ts",
-      "tsx"
+      "tsx",
+      "json"
     ],
     "moduleNameMapper": {
       "^[./a-zA-Z0-9$_-]+\\.(bmp|gif|jpg|jpeg|png|psd|svg|webp|ttf|otf)$": "RelativeImageStub",
