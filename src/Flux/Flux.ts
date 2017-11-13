@@ -36,7 +36,6 @@ export interface FluxOptions {
 
 export interface FluxAction {
   readonly type: string;
-
   readonly [key: string]: any;
 }
 
