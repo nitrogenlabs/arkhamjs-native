@@ -1,5 +1,5 @@
 import {ArkhamConstants} from '../../constants/ArkhamConstants';
-import {FluxAction} from '../../Flux/Flux';
+import {FluxAction} from '../../Flux';
 import {ArkhamActions} from './ArkhamActions';
 
 describe('ArkhamActions', () => {
