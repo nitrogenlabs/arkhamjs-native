@@ -224,7 +224,7 @@ export class FluxFramework extends EventEmitter {
    * @returns {Promise} The promise is resolved when and if the app saves data to the AsyncStorage, returning
    * the action.
    */
-  dispatch(action: FluxAction, silent: boolean = false): Promise<FluxAction> {
+  async dispatch(action: FluxAction, silent: boolean = false): Promise<FluxAction> {
     action = cloneDeep(action);
     const {type, ...data} = action;
 
@@ -267,33 +267,31 @@ export class FluxFramework extends EventEmitter {
     }
 
     // Save cache in session storage
-    let promise: Promise<boolean> = Promise.resolve(false);
-
     if(useCache) {
-      promise = this.setSessionData(name, this.store);
+      await this.setSessionData(name, this.store);
     }
 
     if(!silent) {
-      promise.then(() => this.emit(type, data));
+      this.emit(type, data);
     }
 
-    return promise.then(() => action);
+    return Promise.resolve(action);
   }
 
   /**
    * Enables the console debugger.
    *
    * @param {number} level Enable or disable the debugger. Uses the constants:
-   *   DEBUG_DISABLED (0) - Disable.
-   *   DEBUG_LOGS (1) - Enable console logs.
-   *   DEBUG_DISPATCH (2) - Enable console logs and dispatch action data (default).
+   *   FluxDebugLevel.DISABLED (0) - Disable.
+   *   FluxDebugLevel.LOGS (1) - Enable console logs.
+   *   FluxDebugLevel.DISPATCH (2) - Enable console logs and dispatch action data (default).
    */
   enableDebugger(level: number = FluxDebugLevel.DISPATCH): void {
     this.options = {...this.options, debugLevel: level};
   }
 
   /**
-   * Get a store object that is registered with Flux
+   * Get a store object that is registered with Flux.
    *
    * @param {string} name The name of the store.
    * @returns {Store} the store object.
@@ -315,12 +313,12 @@ export class FluxFramework extends EventEmitter {
    * Get data from session storage.
    *
    * @param {string} key The key for data.
-   * @returns {any} the data object associated with the key.
+   * @returns {Promise<any>} the data object associated with the key.
    */
   getSessionData(key: string): Promise<any> {
     try {
       return AsyncStorage.getItem(key)
-        .then((value: string) => JSON.parse(value || '""'))
+        .then((value: string) => value ? JSON.parse(value) : null)
         .catch((error: Error) => Promise.reject(error));
     } catch(error) {
       return Promise.resolve(null);
@@ -352,7 +350,7 @@ export class FluxFramework extends EventEmitter {
    *
    * @param {function} [listener] The callback associated with the subscribed event.
    */
-  onInit(listener: () => void): void {
+  onInit(listener: (...args: any[]) => void): void {
     this.on(ArkhamConstants.INIT, listener);
   }
 
@@ -361,7 +359,7 @@ export class FluxFramework extends EventEmitter {
    *
    * @param {function} [listener] The callback associated with the subscribed event.
    */
-  offInit(listener: () => void): void {
+  offInit(listener: (...args: any[]) => void): void {
     this.off(ArkhamConstants.INIT, listener);
   }
 
@@ -371,7 +369,7 @@ export class FluxFramework extends EventEmitter {
    * @param {string} [eventType] Event to unsubscribe.
    * @param {function} [listener] The callback associated with the subscribed event.
    */
-  off(eventType: string, listener): void {
+  off(eventType: string, listener: (...args: any[]) => void): void {
     this.removeListener(eventType, listener);
   }
 
@@ -379,7 +377,7 @@ export class FluxFramework extends EventEmitter {
    * Registers new Stores.
    *
    * @param {array} stores Store class.
-   * @returns {array} the class object(s).
+   * @returns {Promise<object[]>} the class object(s).
    */
   registerStores(stores: any[]): Promise<object[]> {
     return Promise

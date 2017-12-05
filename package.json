@@ -1,6 +1,6 @@
 {
   "name": "arkhamjs-native",
-  "version": "2.0.12",
+  "version": "2.1.0",
   "description": "An ES6 Flux library for React Native",
   "license": "MIT",
   "main": "index.js",
@@ -16,7 +16,7 @@
     "type": "git",
     "url": "http://github.com/nitrogenlabs/arkhamjs-native"
   },
-  "homepage": "https://arkhamjs.com",
+  "homepage": "http://www.arkhamjs.com",
   "bugs": {
     "url": "https://github.com/nitrogenlabs/arkhamjs-native/issues"
   },
@@ -28,23 +28,24 @@
     "test": "NODE_ENV=test jest",
     "prepublishOnly": "npm test && npm run compile"
   },
+  "typings": "dist/index",
   "dependencies": {
     "events": "^1.1.1",
     "history": "^4.7.2",
     "lodash": "^4.17.4",
     "prop-types": "^15.6.0",
-    "react": "^16.1.1",
+    "react": "^16.2.0",
     "react-native": "0.50.4",
     "react-router-native": "^4.2.0"
   },
   "devDependencies": {
     "@types/history": "^4.6.2",
     "@types/jest": "^21.1.8",
-    "@types/node": "^8.0.53",
+    "@types/node": "^8.0.55",
     "@types/prop-types": "^15.5.2",
-    "@types/react": "^16.0.25",
-    "@types/react-native": "^0.50.7",
-    "@types/react-router-native": "^4.0.1",
+    "@types/react": "^16.0.27",
+    "@types/react-native": "^0.50.8",
+    "@types/react-router-native": "^4.0.2",
     "@types/react-test-renderer": "^16.0.0",
     "babel-core": "^6.26.0",
     "babel-jest": "^21.2.0",
@@ -58,16 +59,19 @@
     "isomorphic-fetch": "^2.2.1",
     "jest": "^21.2.1",
     "mock-async-storage": "^2.0.2",
-    "react-addons-test-utils": "^16.0.0-alpha.3",
     "react-scripts-ts": "^2.8.0",
-    "react-test-renderer": "^16.1.1",
+    "react-test-renderer": "^16.2.0",
     "regenerator-runtime": "^0.11.0",
-    "ts-jest": "^21.2.3",
+    "ts-jest": "^21.2.4",
     "tslint": "^5.8.0",
     "tslint-eslint-rules": "^4.1.1",
     "tslint-react": "^3.2.0",
     "typedoc": "^0.9.0",
-    "typescript": "^2.6.1"
+    "typescript": "^2.6.2"
+  },
+  "peerDependencies": {
+    "react": ">=16",
+    "react-native": ">=0.50"
   },
   "jest": {
     "automock": false,
@@ -120,8 +124,7 @@
       "promise",
       "source-map",
       "<rootDir>/node_modules/react-native/",
-      "<rootDir>/node_modules/react-router-native/",
-      "<rootDir>/node_modules/react-addons-test-utils"
+      "<rootDir>/node_modules/react-router-native/"
     ],
     "verbose": false
   }

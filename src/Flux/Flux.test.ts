@@ -1,11 +1,16 @@
-import {set} from 'lodash';
+/**
+ * Copyright (c) 2017, Nitrogen Labs, Inc.
+ * Copyrights licensed under the MIT License. See the accompanying LICENSE file for terms.
+ */
+
+ import {set} from 'lodash';
 import {default as MockAsyncStorage} from 'mock-async-storage';
 import {AsyncStorage} from 'react-native';
 import {Store} from '../Store/Store';
 import {Flux, FluxAction, FluxDebugLevel, FluxOptions} from './Flux';
 
 describe('Flux', () => {
-  let storePromise: Promise<Store[]> = Promise.resolve();
+  let storePromise: Promise<any> = Promise.resolve();
   const val = 'hello_world';
   const key = 'test';
   const cfg: FluxOptions = {
