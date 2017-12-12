@@ -1,6 +1,6 @@
 {
   "name": "arkhamjs-native",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "An ES6 Flux library for React Native",
   "license": "MIT",
   "main": "index.js",
@@ -24,9 +24,10 @@
     "compile": "NODE_ENV=production tsc",
     "docs": "typedoc --target ES5 --module commonjs --out docs/ src/ --exclude src/index.ts --excludeExternals --hideGenerator",
     "lint": "tslint -c tslint.json 'src/**/*.{ts,tsx}'",
+    "prepublishOnly": "npm test && npm run compile",
     "pretest": "npm run lint",
     "test": "NODE_ENV=test jest",
-    "prepublishOnly": "npm test && npm run compile"
+    "watch": "tsc -w -p ./src"
   },
   "typings": "dist/index",
   "dependencies": {
@@ -35,16 +36,16 @@
     "lodash": "^4.17.4",
     "prop-types": "^15.6.0",
     "react": "^16.2.0",
-    "react-native": "0.50.4",
+    "react-native": "0.51.0",
     "react-router-native": "^4.2.0"
   },
   "devDependencies": {
     "@types/history": "^4.6.2",
     "@types/jest": "^21.1.8",
-    "@types/node": "^8.0.55",
+    "@types/node": "^8.0.58",
     "@types/prop-types": "^15.5.2",
-    "@types/react": "^16.0.27",
-    "@types/react-native": "^0.50.8",
+    "@types/react": "^16.0.29",
+    "@types/react-native": "^0.51.1",
     "@types/react-router-native": "^4.0.2",
     "@types/react-test-renderer": "^16.0.0",
     "babel-core": "^6.26.0",
@@ -61,7 +62,7 @@
     "mock-async-storage": "^2.0.2",
     "react-scripts-ts": "^2.8.0",
     "react-test-renderer": "^16.2.0",
-    "regenerator-runtime": "^0.11.0",
+    "regenerator-runtime": "^0.11.1",
     "ts-jest": "^21.2.4",
     "tslint": "^5.8.0",
     "tslint-eslint-rules": "^4.1.1",
