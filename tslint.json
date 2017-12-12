@@ -113,7 +113,7 @@
       true,
       "never"
     ],
-    "switch-default": true,
+    "switch-default": false,
     "trailing-comma": [
       true,
       {
