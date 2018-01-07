@@ -1,6 +1,6 @@
 {
   "name": "arkhamjs-native",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "An ES6 Flux library for React Native",
   "license": "MIT",
   "main": "index.js",
